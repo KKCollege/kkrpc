@@ -4,12 +4,10 @@ package cn.kimmking.kkrpc.demo.api;
  * Description for this class.
  *
  * @Author : kimmking(kimmking@apache.org)
- * @create 2024/3/6 20:36
+ * @create 2024/3/6 21:50
  */
-public interface UserService {
+public interface OrderService {
 
-    User findById(int id);
-
-//    User findById(long id);
+    Order findById(Integer id);
 
 }

@@ -63,7 +63,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     private Method findMethod(Class<?> aClass, String methodName) {
         for (Method method : aClass.getMethods()) {
-            if(method.getName().equals(methodName)) {
+            if(method.getName().equals(methodName)) {  // 有多个重名方法，
                 return method;
             }
         }

@@ -6,16 +6,28 @@
         <groupId>cn.kimmking</groupId>
         <artifactId>kkrpc</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-<!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
-    <artifactId>kkrpc-core</artifactId>
+    <artifactId>kkrpc-demo-consumer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>kkrpc-core</name>
-    <description>kkrpc-core</description>
+    <name>kkrpc-demo-consumer</name>
+    <description>kkrpc-demo-consumer</description>
     <properties>
         <java.version>17</java.version>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>cn.kimmking</groupId>
+            <artifactId>kkrpc-demo-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.kimmking</groupId>
+            <artifactId>kkrpc-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -32,14 +44,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>4.12.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
+            <groupId>cn.kimmking</groupId>
+            <artifactId>kkrpc-demo-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

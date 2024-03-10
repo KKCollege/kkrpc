@@ -3,6 +3,8 @@ package cn.kimmking.kkrpc.core.provider;
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.util.MethodUtils;
+import com.sun.jdi.InvocationException;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.beans.BeansException;
@@ -30,7 +32,6 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private Map<String, Object> skeleton = new HashMap<>();
 
     @PostConstruct  // init-method
-    // PreDestroy
     public void buildProviders() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
         providers.forEach((x,y) -> System.out.println(x));
@@ -49,16 +50,26 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
 
     public RpcResponse invoke(RpcRequest request) {
+
+        String methodName = request.getMethod();
+        if (MethodUtils.checkLocalMethod(methodName)) {
+            return null;
+        }
+
+        RpcResponse rpcResponse = new RpcResponse();
         Object bean = skeleton.get(request.getService());
         try {
             Method method = findMethod(bean.getClass(), request.getMethod());
             Object result = method.invoke(bean, request.getArgs());
-            return new RpcResponse(true, result);
+            rpcResponse.setStatus(true);
+            rpcResponse.setData(result);
+            return rpcResponse;
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
+        return rpcResponse;
     }
 
     private Method findMethod(Class<?> aClass, String methodName) {

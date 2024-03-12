@@ -28,8 +28,23 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
     public void start() {
         String[] names = applicationContext.getBeanDefinitionNames();
+        long start = System.currentTimeMillis();
         for (String name : names) {
             Object bean = applicationContext.getBean(name);
+
+            // 优化点1：过滤去掉spring/jdk/其他框架本身的bean的反射扫描 TODO 1
+            String packageName = bean.getClass().getPackageName();
+            if (packageName.startsWith("org.springframework") ||
+                    packageName.startsWith("java.") ||
+                    packageName.startsWith("javax.") ||
+                    packageName.startsWith("jdk.") ||
+                    packageName.startsWith("com.fasterxml.") ||
+                    packageName.startsWith("com.sun.") ||
+                    packageName.startsWith("jakarta.") ||
+                    packageName.startsWith("org.apache") ) {
+                continue;  // 这段逻辑可以降低一半启动速度 300ms->160ms
+            }
+            System.out.println(packageName + " package bean => " + name);
 
             List<Field> fields = findAnnotatedField(bean.getClass());
 
@@ -50,6 +65,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
             });
 
         }
+        System.out.println("create consumer take " + (System.currentTimeMillis()-start) + " ms");
     }
 
     private Object createConsumer(Class<?> service) {

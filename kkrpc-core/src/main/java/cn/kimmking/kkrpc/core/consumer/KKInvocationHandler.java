@@ -3,6 +3,7 @@ package cn.kimmking.kkrpc.core.consumer;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
+import cn.kimmking.kkrpc.core.util.TypeUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
@@ -32,12 +33,12 @@ public class KKInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         if (MethodUtils.checkLocalMethod(method.getName())) {
-            return null;
+            return method.invoke(this, args);
         }
 
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setService(service.getCanonicalName());
-        rpcRequest.setMethod(method.getName());
+        rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
         RpcResponse rpcResponse = post(rpcRequest);
@@ -47,7 +48,7 @@ public class KKInvocationHandler implements InvocationHandler {
             if(data instanceof JSONObject jsonResult) {
                 return jsonResult.toJavaObject(method.getReturnType());
             } else {
-                return data;
+                return TypeUtils.cast(data, method.getReturnType());
             }
         }else {
             Exception ex = rpcResponse.getEx();

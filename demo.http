@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
   "service": "cn.kimmking.kkrpc.demo.api.UserService",
-  "method": "findById",
+  "method": "findById@1_int,",
   "args": [100]
 }
 
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
   "service": "cn.kimmking.kkrpc.demo.api.OrderService",
-  "method": "findById",
+  "method": "findById@1_int,",
   "args": [200]
 }
 

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 @SpringBootApplication
@@ -44,12 +45,25 @@ public class KkrpcDemoConsumerApplication {
         return x -> {
 //            User user = userService.findById(1);
 //            System.out.println("RPC result userService.findById(1) = " + user);
+//
+//            user = userService.findById(11, "Cola");
+//            System.out.println("RPC result userService.findById(11, \"Cola\") = " + user);
+
+            int id = userService.getId(new User(1000, "KK"));
+            System.out.println("RPC result userService.getId(new User(1000, \"KK\")) = " + id);
+
+
 
 //            System.out.println(userService.toString());
 //
-//            System.out.println(userService.getId(11));
+            System.out.println(userService.getId(11));
 
-            System.out.println(userService.getName());
+            System.out.println(Proxy.getInvocationHandler(userService).hashCode());
+            System.out.println(userService.hashCode());
+            System.out.println(Proxy.getInvocationHandler(userService).toString());
+            System.out.println(userService.toString());
+
+//            System.out.println(userService.getName());
 
             //Order order = orderService.findById(2);
             //System.out.println("RPC result orderService.findById(2) = " + order);

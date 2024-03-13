@@ -3,19 +3,23 @@ package cn.kimmking.kkrpc.core.provider;
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.meta.ProviderMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
-import com.sun.jdi.InvocationException;
+import cn.kimmking.kkrpc.core.util.TypeUtils;
+
+import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Description for this class.
@@ -29,10 +33,10 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
 
-    private Map<String, Object> skeleton = new HashMap<>();
+    private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
     @PostConstruct  // init-method
-    public void buildProviders() {
+    public void start() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
         providers.forEach((x,y) -> System.out.println(x));
 //        skeleton.putAll(providers);
@@ -45,22 +49,39 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     private void genInterface(Object x) {
         Class<?> itfer = x.getClass().getInterfaces()[0];
-        skeleton.put(itfer.getCanonicalName(), x);
+        Method[] methods = itfer.getMethods();
+        for (Method method : methods) {
+            if(MethodUtils.checkLocalMethod(method)) {
+                continue;
+            }
+            createProviders(itfer, x, method);
+        }
+    }
+
+    private void createProviders(Class<?> itfer, Object x, Method method) {
+        ProviderMeta meta = new ProviderMeta();
+        meta.setServiceImpl(x);
+        meta.setMethod(method);
+        meta.setMethodSign(MethodUtils.methodSign(method));
+        System.out.println("ProviderMeta: " + meta);
+        skeleton.add(itfer.getCanonicalName(), meta);
     }
 
 
     public RpcResponse invoke(RpcRequest request) {
-
-        String methodName = request.getMethod();
-        if (MethodUtils.checkLocalMethod(methodName)) {
-            return null;
-        }
-
         RpcResponse rpcResponse = new RpcResponse();
-        Object bean = skeleton.get(request.getService());
+        List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
-            Method method = findMethod(bean.getClass(), request.getMethod());
-            Object result = method.invoke(bean, request.getArgs());
+            ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
+            if(meta == null) {
+                rpcResponse.setEx(new RuntimeException("can't find ProviderMeta for request[" + request + "]"));
+                return rpcResponse;
+            }
+            Method method = meta.getMethod();
+
+            Object[] args = processArgs(request.getArgs(), method.getParameterTypes());
+
+            Object result = method.invoke(meta.getServiceImpl(), args);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
             return rpcResponse;
@@ -72,13 +93,34 @@ public class ProviderBootstrap implements ApplicationContextAware {
         return rpcResponse;
     }
 
-    private Method findMethod(Class<?> aClass, String methodName) {
-        for (Method method : aClass.getMethods()) {
-            if(method.getName().equals(methodName)) {  // 有多个重名方法，
-                return method;
-            }
+    private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {
+        if(args.length == 0) return args;
+        Object[] actuals = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+//            if(args[i] instanceof JSONObject jsonObject) {
+//                actuals[i] = jsonObject.toJavaObject(parameterTypes[i]);
+//            } else {
+//                actuals[i] = args[i];
+//            }
+
+            actuals[i] = TypeUtils.cast(args[i], parameterTypes[i]);
+
         }
-        return null;
+        return actuals;
     }
+
+    private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
+        Optional<ProviderMeta> optional = providerMetas.stream().filter(x -> x.getMethodSign().equals(methodSign)).findFirst();
+        return optional.orElse(null);
+    }
+
+//    private Method findMethod(Class<?> aClass, String methodName) {
+//        for (Method method : aClass.getMethods()) {
+//            if(method.getName().equals(methodName)) {  // 有多个重名方法，
+//                return method;
+//            }
+//        }
+//        return null;
+//    }
 
 }

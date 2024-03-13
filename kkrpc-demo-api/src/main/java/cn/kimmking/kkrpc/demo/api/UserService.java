@@ -10,7 +10,11 @@ public interface UserService {
 
     User findById(int id);
 
-    int getId(int id);
+    User findById(int id, String name);
+
+    long getId(long id);
+
+    int getId(User user);
 
     String getName();
 

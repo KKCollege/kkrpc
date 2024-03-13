@@ -3,11 +3,14 @@ package cn.kimmking.kkrpc.core.consumer;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
+import cn.kimmking.kkrpc.core.util.TypeUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -46,8 +49,16 @@ public class KKInvocationHandler implements InvocationHandler {
             Object data = rpcResponse.getData();
             if(data instanceof JSONObject jsonResult) {
                 return jsonResult.toJavaObject(method.getReturnType());
+            } else if (data instanceof JSONArray jsonArray) {
+                Object[] array = jsonArray.toArray();
+                Class<?> componentType = method.getReturnType().getComponentType();
+                Object resultArray = Array.newInstance(componentType, array.length);
+                for (int i = 0; i < array.length; i++) {
+                    Array.set(resultArray, i, array[i]);
+                }
+                return resultArray;
             } else {
-                return data;
+                return TypeUtils.cast(data, method.getReturnType());
             }
         }else {
             Exception ex = rpcResponse.getEx();

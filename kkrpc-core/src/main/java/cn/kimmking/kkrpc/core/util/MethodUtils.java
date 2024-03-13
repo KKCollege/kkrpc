@@ -1,6 +1,7 @@
 package cn.kimmking.kkrpc.core.util;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Description for this class.
@@ -22,6 +23,25 @@ public class MethodUtils {
             return true;
         }
         return false;
+    }
+
+    public static boolean checkLocalMethod(final Method method) {
+        return method.getDeclaringClass().equals(Object.class);
+    }
+
+    public static String methodSign(Method method) {
+        StringBuilder sb = new StringBuilder(method.getName());
+        sb.append("@").append(method.getParameterCount());
+        Arrays.stream(method.getParameterTypes()).forEach(
+                c -> sb.append("_").append(c.getCanonicalName())
+        );
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        Arrays.stream(MethodUtils.class.getMethods()).forEach(
+                m -> System.out.println(methodSign(m))
+        );
     }
 
 }

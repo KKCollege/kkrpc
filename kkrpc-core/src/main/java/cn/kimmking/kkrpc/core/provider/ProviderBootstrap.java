@@ -15,10 +15,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Description for this class.
@@ -47,14 +44,16 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void genInterface(Object x) {
-        Class<?> itfer = x.getClass().getInterfaces()[0];
-        Method[] methods = itfer.getMethods();
-        for (Method method : methods) {
-            if (MethodUtils.checkLocalMethod(method)) {
-                continue;
-            }
-            createProvider(itfer, x, method);
-        }
+        Arrays.stream(x.getClass().getInterfaces()).forEach(
+                itfer -> {
+                    Method[] methods = itfer.getMethods();
+                    for (Method method : methods) {
+                        if (MethodUtils.checkLocalMethod(method)) {
+                            continue;
+                        }
+                        createProvider(itfer, x, method);
+                    }
+                });
     }
 
     private void createProvider(Class<?> itfer, Object x, Method method) {

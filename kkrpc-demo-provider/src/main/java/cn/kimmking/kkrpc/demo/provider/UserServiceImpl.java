@@ -5,6 +5,9 @@ import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Description for this class.
  *
@@ -63,6 +66,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public int[] getIds(int[] ids) {
         return ids;
+    }
+
+    @Override
+    public List<User> getList(List<User> userList) {
+        return userList;
+    }
+
+    @Override
+    public Map<String, User> getMap(Map<String, User> userMap) {
+        return userMap;
     }
 
 }

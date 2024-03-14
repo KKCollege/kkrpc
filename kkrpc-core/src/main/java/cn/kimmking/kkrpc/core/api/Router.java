@@ -8,15 +8,10 @@ import java.util.List;
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/14 09:43
  */
-public interface Router {
+public interface Router<T> {
 
-    List<String> route(List<String> urls);
+    List<T> route(List<T> urls);
 
-    Router DefaultRouter = new Router() {
-        @Override
-        public List<String> route(List<String> urls) {
-            return urls;
-        }
-    };
+    Router DefaultRouter = urls -> urls;
 
 }

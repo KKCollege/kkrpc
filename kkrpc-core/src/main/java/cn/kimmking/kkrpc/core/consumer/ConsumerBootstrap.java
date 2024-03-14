@@ -67,8 +67,8 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         }
     }
 
-    private Object createConsumer(Class<?> service, Router router,
-                                  LoadBalancer loadBalancer, String[] providers) {
+    private Object createConsumer(Class<?> service, Router<String> router,
+                                  LoadBalancer<String> loadBalancer, String[] providers) {
         return Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service}, new KKInvocationHandler(service, router, loadBalancer, providers));
     }

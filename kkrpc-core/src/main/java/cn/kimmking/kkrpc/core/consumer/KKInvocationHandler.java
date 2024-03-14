@@ -29,11 +29,12 @@ public class KKInvocationHandler implements InvocationHandler {
     final static MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
 
     Class<?> service;
-    Router router;
-    LoadBalancer loadBalancer;
+    Router<String> router;
+    LoadBalancer<String> loadBalancer;
     List<String> providers;
 
-    public KKInvocationHandler(Class<?> service, Router router, LoadBalancer loadBalancer, String[] providers) {
+    public KKInvocationHandler(Class<?> service, Router<String> router,
+                               LoadBalancer<String> loadBalancer, String[] providers) {
         this.service = service;
         this.router = router;
         this.loadBalancer = loadBalancer;

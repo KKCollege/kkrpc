@@ -1,5 +1,7 @@
 package cn.kimmking.kkrpc.core.consumer;
 
+import cn.kimmking.kkrpc.core.api.LoadBalancer;
+import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,9 +29,15 @@ public class KKInvocationHandler implements InvocationHandler {
     final static MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
 
     Class<?> service;
+    Router router;
+    LoadBalancer loadBalancer;
+    List<String> providers;
 
-    public KKInvocationHandler(Class<?> clazz) {
-        this.service = clazz;
+    public KKInvocationHandler(Class<?> service, Router router, LoadBalancer loadBalancer, String[] providers) {
+        this.service = service;
+        this.router = router;
+        this.loadBalancer = loadBalancer;
+        this.providers = List.of(providers);
     }
 
     @Override
@@ -43,7 +52,10 @@ public class KKInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
-        RpcResponse rpcResponse = post(rpcRequest);
+        List<String> urls = this.router.route(this.providers);
+        String url = this.loadBalancer.choose(urls);
+
+        RpcResponse rpcResponse = post(rpcRequest, url);
 
         if(rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
@@ -74,11 +86,11 @@ public class KKInvocationHandler implements InvocationHandler {
             .connectTimeout(1, TimeUnit.SECONDS)
             .build();
 
-    private RpcResponse post(RpcRequest rpcRequest) {
+    private RpcResponse post(RpcRequest rpcRequest, String url) {
         String reqJson = JSON.toJSONString(rpcRequest);
         System.out.println(" ===> reqJson = " + reqJson);
         Request request = new Request.Builder()
-                .url("http://localhost:8080/")
+                .url(url)
                 .post(RequestBody.create(reqJson, JSONTYPE))
                 .build();
         try {

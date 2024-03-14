@@ -1,5 +1,7 @@
 package cn.kimmking.kkrpc.core.consumer;
 
+import cn.kimmking.kkrpc.core.api.LoadBalancer;
+import cn.kimmking.kkrpc.core.api.Router;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,16 @@ public class ConsumerConfig {
             consumerBootstrap.start();
             System.out.println("consumerBootstrap started ...");
         };
+    }
+
+    @Bean
+    public LoadBalancer loadBalancer() {
+        return LoadBalancer.DefaultLoadBalancer;
+    }
+
+    @Bean
+    public Router router() {
+        return Router.DefaultRouter;
     }
 
 }

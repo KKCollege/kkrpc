@@ -1,9 +1,6 @@
 package cn.kimmking.kkrpc.core.consumer;
 
-import cn.kimmking.kkrpc.core.api.LoadBalancer;
-import cn.kimmking.kkrpc.core.api.Router;
-import cn.kimmking.kkrpc.core.api.RpcRequest;
-import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.api.*;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import cn.kimmking.kkrpc.core.util.TypeUtils;
 import com.alibaba.fastjson.JSON;
@@ -29,15 +26,12 @@ public class KKInvocationHandler implements InvocationHandler {
     final static MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
 
     Class<?> service;
-    Router<String> router;
-    LoadBalancer<String> loadBalancer;
+    RpcContext context;
     List<String> providers;
 
-    public KKInvocationHandler(Class<?> service, Router<String> router,
-                               LoadBalancer<String> loadBalancer, String[] providers) {
+    public KKInvocationHandler(Class<?> service, RpcContext context, String[] providers) {
         this.service = service;
-        this.router = router;
-        this.loadBalancer = loadBalancer;
+        this.context = context;
         this.providers = List.of(providers);
     }
 
@@ -53,8 +47,8 @@ public class KKInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
-        List<String> urls = this.router.route(this.providers);
-        String url = this.loadBalancer.choose(urls);
+        List<String> urls = context.getRouter().route(this.providers);
+        String url = context.getLoadBalancer().choose(urls);
 
         RpcResponse rpcResponse = post(rpcRequest, url);
 

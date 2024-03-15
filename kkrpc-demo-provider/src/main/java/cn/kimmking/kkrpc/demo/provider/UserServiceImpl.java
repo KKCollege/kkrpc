@@ -78,4 +78,9 @@ public class UserServiceImpl implements UserService {
         return userMap;
     }
 
+    @Override
+    public Boolean getFlag(boolean flag) {
+        return !flag;
+    }
+
 }

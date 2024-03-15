@@ -110,6 +110,9 @@ public class KkrpcDemoConsumerApplication {
                     (k,v) -> System.out.println(k + " -> " + v)
             );
 
+            System.out.println("Case 13. >>===[测试参数和返回值都是Boolean/boolean类型]===");
+            System.out.println("userService.getFlag(false) = " + userService.getFlag(false));
+
         };
     }
 

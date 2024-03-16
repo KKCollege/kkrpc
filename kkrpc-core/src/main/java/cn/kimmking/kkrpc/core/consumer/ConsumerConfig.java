@@ -1,14 +1,18 @@
 package cn.kimmking.kkrpc.core.consumer;
 
 import cn.kimmking.kkrpc.core.api.LoadBalancer;
+import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.cluster.RandomLoadBalancer;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+
+import java.util.List;
 
 /**
  * Description for this class.
@@ -19,6 +23,9 @@ import org.springframework.core.annotation.Order;
 
 @Configuration
 public class ConsumerConfig {
+
+    @Value("${kkrpc.providers}")
+    String servers;
 
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
@@ -44,6 +51,11 @@ public class ConsumerConfig {
     @Bean
     public Router router() {
         return Router.Default;
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public RegistryCenter consumer_rc() {
+        return new RegistryCenter.StaticRegistryCenter(List.of(servers.split(",")));
     }
 
 }

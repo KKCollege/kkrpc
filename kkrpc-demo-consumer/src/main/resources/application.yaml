@@ -1,4 +1,6 @@
 server:
   port: 8088
 kkrpc:
-  urls: http://localhost:8080/
+  providers: http://localhost:8081/,http://localhost:8082/
+  zkServer: localhost:2181
+  namespace: kkrpc

@@ -2,10 +2,10 @@ package cn.kimmking.kkrpc.core.consumer;
 
 import cn.kimmking.kkrpc.core.annotation.KKConsumer;
 import cn.kimmking.kkrpc.core.api.LoadBalancer;
+import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import lombok.Data;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Description for this class.
@@ -37,16 +38,18 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
 
         Router router = applicationContext.getBean(Router.class);
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
 
         RpcContext context = new RpcContext();
         context.setRouter(router);
         context.setLoadBalancer(loadBalancer);
 
-        String urls = environment.getProperty("kkrpc.urls", "");
-        if(Strings.isEmpty(urls)) {
-            System.out.println("kkrpc.urls is empty.");
-        }
-        String[] providers = urls.split(",");
+//        String urls = environment.getProperty("kkrpc.providers", "");
+//        if(Strings.isEmpty(urls)) {
+//            System.out.println("kkrpc.urls is empty.");
+//        }
+//        String[] providers = urls.split(",");
+//        List<String> providers = rc.fetchAll();
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {
@@ -61,7 +64,7 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
                     String serviceName = service.getCanonicalName();
                     Object consumer = stub.get(serviceName);
                     if (consumer == null) {
-                        consumer = createConsumer(service, context, providers);
+                        consumer = createFromRegistry(service, context, rc);
                     }
                     f.setAccessible(true);
                     f.set(bean, consumer);
@@ -73,7 +76,20 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         }
     }
 
-    private Object createConsumer(Class<?> service, RpcContext context, String[] providers) {
+    private Object createFromRegistry(Class<?> service, RpcContext context, RegistryCenter rc) {
+        String serviceName = service.getCanonicalName();
+        System.out.println(" ===> createFromRegistry for service: " + serviceName);
+        List<String> nodes = rc.fetchAll(serviceName);
+        List<String> providers = nodes.stream()
+                .map(x -> "http://" + x.replace('_', ':'))
+                .collect(Collectors.toList());
+        System.out.println(" ===>  rc.fetchAll: ");
+        providers.forEach(System.out::println);
+        // 订阅变化 todo
+        return  createConsumer(service, context, providers);
+    }
+
+    private Object createConsumer(Class<?> service, RpcContext context, List<String> providers) {
         return Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service}, new KKInvocationHandler(service, context, providers));
     }

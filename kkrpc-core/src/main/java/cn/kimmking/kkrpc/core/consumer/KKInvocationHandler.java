@@ -29,10 +29,10 @@ public class KKInvocationHandler implements InvocationHandler {
     RpcContext context;
     List<String> providers;
 
-    public KKInvocationHandler(Class<?> service, RpcContext context, String[] providers) {
+    public KKInvocationHandler(Class<?> service, RpcContext context, List<String> providers) {
         this.service = service;
         this.context = context;
-        this.providers = List.of(providers);
+        this.providers = providers;
     }
 
     @Override

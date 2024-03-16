@@ -1,6 +1,8 @@
 package cn.kimmking.kkrpc.demo.consumer;
 
 import cn.kimmking.kkrpc.core.annotation.KKConsumer;
+import cn.kimmking.kkrpc.core.api.RpcRequest;
+import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.consumer.ConsumerConfig;
 import cn.kimmking.kkrpc.demo.api.Order;
 import cn.kimmking.kkrpc.demo.api.OrderService;
@@ -14,6 +16,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -37,6 +41,11 @@ public class KkrpcDemoConsumerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(KkrpcDemoConsumerApplication.class, args);
+    }
+
+    @RequestMapping("/hello")
+    public User hello(int id) {
+        return userService.findById(id);
     }
 
     @Bean

@@ -3,6 +3,9 @@ package cn.kimmking.kkrpc.demo.provider;
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,9 +18,13 @@ import org.springframework.stereotype.Component;
 @Component
 @KKProvider
 public class UserServiceImpl implements UserService {
+
+    @Value("${server.port}")
+    String port;
+
     @Override
     public User findById(int id) {
-        return new User(id, "KK-" + System.currentTimeMillis());
+        return new User(id, "KK-" + port + "_" + System.currentTimeMillis());
     }
 
     @Override

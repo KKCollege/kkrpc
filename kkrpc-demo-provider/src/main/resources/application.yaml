@@ -1,0 +1,5 @@
+server:
+  port: 8081
+kkrpc:
+  zkServer: localhost:2181
+  namespace: kkrpc

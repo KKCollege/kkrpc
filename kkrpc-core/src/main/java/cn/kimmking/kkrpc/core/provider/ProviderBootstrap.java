@@ -1,6 +1,7 @@
 package cn.kimmking.kkrpc.core.provider;
 
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
+import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
@@ -8,6 +9,8 @@ import cn.kimmking.kkrpc.core.util.MethodUtils;
 import cn.kimmking.kkrpc.core.util.TypeUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.util.*;
 
 /**
@@ -28,19 +32,21 @@ import java.util.*;
 public class ProviderBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
+    MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
+    String providerUrl;
 
-    private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
+    @Value("${server.port}")
+    String port;
 
+    @SneakyThrows
     @PostConstruct  // init-method
-    public void start() {
+    public void init() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
         providers.forEach((x,y) -> System.out.println(x));
-//        skeleton.putAll(providers);
-
-        providers.values().forEach(
-                x -> genInterface(x)
-        );
-
+        providers.values().forEach( x -> genInterface(x));
+        String ip = InetAddress.getLocalHost().getHostAddress();
+        //providerUrl = "http://" + ip + ":" + port;// + "/";
+        providerUrl = ip + "_" + port;
     }
 
     private void genInterface(Object x) {
@@ -82,6 +88,16 @@ public class ProviderBootstrap implements ApplicationContextAware {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
+    }
+
+    public void start() {
+        // 注册服务
+        this.skeleton.keySet().forEach(this::registerService);
+    }
+
+    private void registerService(String svc) {
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+        rc.register(svc, providerUrl);
     }
 
     private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {

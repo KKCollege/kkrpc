@@ -1,9 +1,11 @@
 package cn.kimmking.kkrpc.core.registry;
 
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
+import lombok.SneakyThrows;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
@@ -73,6 +75,31 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     @Override
     public List<String> fetchAll(String service) {
-        return null;
+        String servicePath = "/" + service;
+        try {
+            // 获取所有子节点
+            List<String> nodes = client.getChildren().forPath(servicePath);
+            System.out.println(" ===> fetchAll from zk: " + servicePath);
+            nodes.forEach(System.out::println);
+            return nodes;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @SneakyThrows
+    @Override
+    public void subscribe(String service, ChangedListener listener) {
+        final TreeCache cache = TreeCache.newBuilder(client, "/"+service)
+                .setCacheData(true).setMaxDepth(2).build();
+        cache.getListenable().addListener(
+                (curator, event) -> {
+                    // 有任何节点变动这里会执行
+                    System.out.println("zk subscribe event: " + event);
+                    List<String> nodes = fetchAll(service);
+                    listener.fire(new Event(nodes));
+                }
+        );
+        cache.start();
     }
 }

@@ -1,5 +1,7 @@
 package cn.kimmking.kkrpc.core.api;
 
+import cn.kimmking.kkrpc.core.registry.ChangedListener;
+
 import java.util.List;
 
 /**
@@ -19,7 +21,7 @@ public interface RegistryCenter {
 
     // consumer侧
     List<String> fetchAll(String service); // c
-    // void subscribe(); // c
+    void subscribe(String service, ChangedListener listener);
     // void heartbeat();
 
     class StaticRegistryCenter implements RegistryCenter {
@@ -52,6 +54,11 @@ public interface RegistryCenter {
         @Override
         public List<String> fetchAll(String service) {
             return providers;
+        }
+
+        @Override
+        public void subscribe(String service, ChangedListener listener) {
+
         }
     }
 

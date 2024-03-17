@@ -1,7 +1,11 @@
 package cn.kimmking.kkrpc.core.provider;
 
+import cn.kimmking.kkrpc.core.api.RegistryCenter;
+import cn.kimmking.kkrpc.core.registry.ZkRegistryCenter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * Description for this class.
@@ -16,6 +20,11 @@ public class ProviderConfig {
     @Bean
     ProviderBootstrap providerBootstrap() {
         return new ProviderBootstrap();
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public RegistryCenter provider_rc() {
+        return new ZkRegistryCenter();
     }
 
 }

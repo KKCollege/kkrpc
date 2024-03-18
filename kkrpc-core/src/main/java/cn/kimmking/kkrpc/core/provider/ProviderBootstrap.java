@@ -36,6 +36,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
     private String instance;
+    private RegistryCenter rc;
 
     @Value("${server.port}")
     private String port;
@@ -43,30 +44,38 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @SneakyThrows
     @PostConstruct  // init-method
     public void init() {
+        System.out.println("ProviderBootstrap init...");
+        rc = applicationContext.getBean(RegistryCenter.class);
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
         providers.forEach((x,y) -> System.out.println(x));
         providers.values().forEach(x -> genInterface(x));
+        System.out.println("ProviderBootstrap initialized.");
     }
 
     @SneakyThrows
     public void start() {
+        System.out.println("ProviderBootstrap start...");
+        rc.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
         instance = ip + "_" + port;
         skeleton.keySet().forEach(this::registerService);
+        System.out.println("ProviderBootstrap started.");
     }
 
     @PreDestroy
     public void stop() {
+        System.out.println("ProviderBootstrap stop...");
         skeleton.keySet().forEach(this::unregisterService);
+        rc.stop();
+        System.out.println("ProviderBootstrap stopped.");
     }
 
     private void registerService(String service) {
-        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+
         rc.register(service, instance);
     }
 
     private void unregisterService(String service) {
-        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         rc.unregister(service, instance);
     }
 

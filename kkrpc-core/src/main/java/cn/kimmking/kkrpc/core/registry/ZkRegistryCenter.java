@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -20,13 +21,22 @@ import java.util.List;
 public class ZkRegistryCenter implements RegistryCenter {
 
     private CuratorFramework client = null;
+    String zkServer;
+    String namespace;
+
+    public ZkRegistryCenter(String zkServer, String namespace) {
+        this.zkServer = zkServer;
+        this.namespace = namespace;
+    }
 
     @Override
     public void start() {
+        System.out.println("zkServer: " + zkServer);
+        System.out.println("namespace: " + namespace);
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.builder()
-                .connectString("localhost:2181")
-                .namespace("kkrpc")
+                .connectString(zkServer)
+                .namespace(namespace)
                 .retryPolicy(retryPolicy)
                 .build();
         System.out.println(" ===> zk client starting.");
@@ -66,9 +76,10 @@ public class ZkRegistryCenter implements RegistryCenter {
             }
             // 删除实例节点
             String instancePath = servicePath + "/" + instance;
-            System.out.println(" ===> register to zk: " + instancePath);
+            System.out.println(" ===> unregister to zk: " + instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         }
     }

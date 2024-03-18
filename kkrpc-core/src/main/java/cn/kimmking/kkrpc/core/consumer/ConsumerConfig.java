@@ -28,6 +28,12 @@ public class ConsumerConfig {
     @Value("${kkrpc.providers}")
     String servers;
 
+    @Value("${kkrpc.zkServer}")
+    String zkServer;
+
+    @Value("${kkrpc.namespace}")
+    String namespace;
+
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
         return new ConsumerBootstrap();
@@ -56,7 +62,7 @@ public class ConsumerConfig {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public RegistryCenter consumer_rc() {
-        return new ZkRegistryCenter();
+        return new ZkRegistryCenter(zkServer, namespace);
     }
 
 }

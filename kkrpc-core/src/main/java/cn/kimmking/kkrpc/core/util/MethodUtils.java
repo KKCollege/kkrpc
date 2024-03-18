@@ -1,7 +1,13 @@
 package cn.kimmking.kkrpc.core.util;
 
+import cn.kimmking.kkrpc.core.annotation.KKConsumer;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Description for this class.
@@ -42,6 +48,21 @@ public class MethodUtils {
         Arrays.stream(MethodUtils.class.getMethods()).forEach(
                 m -> System.out.println(methodSign(m))
         );
+    }
+
+    public static List<Field> findAnnotatedField(Class<?> aClass,
+                                                 Class<? extends Annotation> annotation) {
+        List<Field> result = new ArrayList<>();
+        while (aClass != null) {
+            Field[] fields = aClass.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.isAnnotationPresent(annotation)) {
+                    result.add(f);
+                }
+            }
+            aClass = aClass.getSuperclass();
+        }
+        return result;
     }
 
 }

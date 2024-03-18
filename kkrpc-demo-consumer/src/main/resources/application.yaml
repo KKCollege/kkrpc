@@ -1,4 +1,10 @@
 server:
   port: 8088
+logging:
+  level:
+    root: error
+
 kkrpc:
+  zkServer: localhost:2181
+  namespace: kkrpc
   providers: http://localhost:8081,http://localhost:8082,http://localhost:8083

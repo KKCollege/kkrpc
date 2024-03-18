@@ -1,10 +1,14 @@
 package cn.kimmking.kkrpc.core.util;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Description for this class.
@@ -66,9 +70,73 @@ public class TypeUtils {
         } else if(type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
             return Boolean.valueOf(origin.toString());
         }
-
         return null;
+    }
 
 
+    @Nullable
+    public static Object castMethodResult(Method method, Object data) {
+        Class<?> returnType = method.getReturnType();
+        Type genericReturnType = method.getGenericReturnType();
+        System.out.println("method.getReturnType() = " + returnType);
+        System.out.println("method.getGenericReturnType() = " + genericReturnType);
+        return castGeneric(data, returnType, genericReturnType);
+    }
+
+    @Nullable
+    public static Object castGeneric(Object data, Class<?> type, Type genericType) {
+        if (data instanceof JSONObject jsonResult) {
+            if (Map.class.isAssignableFrom(type)) {
+                Map resultMap = new HashMap();
+                System.out.println(genericType);
+                if (genericType instanceof ParameterizedType parameterizedType) {
+                    Class<?> keyType = (Class<?>)parameterizedType.getActualTypeArguments()[0];
+                    Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
+                    System.out.println("keyType  : " + keyType);
+                    System.out.println("valueType: " + valueType);
+                    jsonResult.entrySet().stream().forEach(
+                            e -> {
+                                Object key = cast(e.getKey(), keyType);
+                                Object value = cast(e.getValue(), valueType);
+                                resultMap.put(key, value);
+                            }
+                    );
+                }
+                return resultMap;
+            }
+            return jsonResult.toJavaObject(type);
+        } else if (data instanceof JSONArray jsonArray) {
+            Object[] array = jsonArray.toArray();
+            if (type.isArray()) {
+                Class<?> componentType = type.getComponentType();
+                Object resultArray = Array.newInstance(componentType, array.length);
+                for (int i = 0; i < array.length; i++) {
+                    if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")) {
+                        Array.set(resultArray, i, array[i]);
+                    } else {
+                        Object castObject = cast(array[i], componentType);
+                        Array.set(resultArray, i, castObject);
+                    }
+                }
+                return resultArray;
+            } else if (List.class.isAssignableFrom(type)) {
+                List<Object> resultList = new ArrayList<>(array.length);
+                System.out.println(genericType);
+                if (genericType instanceof ParameterizedType parameterizedType) {
+                    Type actualType = parameterizedType.getActualTypeArguments()[0];
+                    System.out.println(actualType);
+                    for (Object o : array) {
+                        resultList.add(cast(o, (Class<?>) actualType));
+                    }
+                } else {
+                    resultList.addAll(Arrays.asList(array));
+                }
+                return resultList;
+            } else {
+                return null;
+            }
+        } else {
+            return cast(data, type);
+        }
     }
 }

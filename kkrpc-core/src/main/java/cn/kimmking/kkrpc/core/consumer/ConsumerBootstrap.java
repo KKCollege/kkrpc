@@ -27,10 +27,9 @@ import java.util.stream.Collectors;
  */
 
 @Data
-public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAware {
+public class ConsumerBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
-    Environment environment;
 
     private Map<String, Object> stub = new HashMap<>();
 

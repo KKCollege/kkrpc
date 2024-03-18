@@ -29,7 +29,7 @@ public class KkrpcDemoProviderApplication {
     ProviderBootstrap providerBootstrap;
 
     @RequestMapping("/")
-    public RpcResponse invoke(@RequestBody RpcRequest request) {
+    public RpcResponse<Object> invoke(@RequestBody RpcRequest request) {
         return providerBootstrap.invoke(request);
     }
 

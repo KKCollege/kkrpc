@@ -50,13 +50,13 @@ public class ConsumerConfig {
     }
 
     @Bean
-    public LoadBalancer loadBalancer() {
+    public LoadBalancer<?> loadBalancer() {
         //return LoadBalancer.Default;
-        return new RoundRibonLoadBalancer();
+        return new RoundRibonLoadBalancer<>();
     }
 
     @Bean
-    public Router router() {
+    public Router<?> router() {
         return Router.Default;
     }
 

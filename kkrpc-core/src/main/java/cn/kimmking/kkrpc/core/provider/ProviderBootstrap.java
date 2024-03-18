@@ -48,7 +48,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         rc = applicationContext.getBean(RegistryCenter.class);
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
         providers.forEach((x,y) -> System.out.println(x));
-        providers.values().forEach(x -> genInterface(x));
+        providers.values().forEach(this::genInterface);
         System.out.println("ProviderBootstrap initialized.");
     }
 
@@ -71,7 +71,6 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void registerService(String service) {
-
         rc.register(service, instance);
     }
 
@@ -79,30 +78,30 @@ public class ProviderBootstrap implements ApplicationContextAware {
         rc.unregister(service, instance);
     }
 
-    private void genInterface(Object x) {
-        Arrays.stream(x.getClass().getInterfaces()).forEach(
-                itfer -> {
-                    Method[] methods = itfer.getMethods();
+    private void genInterface(Object impl) {
+        Arrays.stream(impl.getClass().getInterfaces()).forEach(
+                service -> {
+                    Method[] methods = service.getMethods();
                     for (Method method : methods) {
                         if (MethodUtils.checkLocalMethod(method)) {
                             continue;
                         }
-                        createProvider(itfer, x, method);
+                        createProvider(service, impl, method);
                     }
                 });
     }
 
-    private void createProvider(Class<?> itfer, Object x, Method method) {
+    private void createProvider(Class<?> service, Object impl, Method method) {
         ProviderMeta meta = new ProviderMeta();
         meta.setMethod(method);
-        meta.setServiceImpl(x);
+        meta.setServiceImpl(impl);
         meta.setMethodSign(MethodUtils.methodSign(method));
         System.out.println(" create a provider: " + meta);
-        skeleton.add(itfer.getCanonicalName(), meta);
+        skeleton.add(service.getCanonicalName(), meta);
     }
 
-    public RpcResponse invoke(RpcRequest request) {
-        RpcResponse rpcResponse = new RpcResponse();
+    public RpcResponse<Object> invoke(RpcRequest request) {
+        RpcResponse<Object> rpcResponse = new RpcResponse<>();
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());

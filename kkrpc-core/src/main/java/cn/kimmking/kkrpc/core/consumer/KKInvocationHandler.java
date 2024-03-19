@@ -56,7 +56,7 @@ public class KKInvocationHandler implements InvocationHandler {
             return castMethodResult(method, rpcResponse.getData());
         } else {
             Exception ex = rpcResponse.getEx();
-            ex.printStackTrace();
+            // ex.printStackTrace();
             throw new RuntimeException(ex);
         }
     }

@@ -2,8 +2,8 @@ package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
-import cn.kimmking.kkrpc.core.provider.ProviderBootstrap;
 import cn.kimmking.kkrpc.core.provider.ProviderConfig;
+import cn.kimmking.kkrpc.core.provider.ProviderInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,11 +26,11 @@ public class KkrpcDemoProviderApplication {
     // 使用HTTP + JSON 来实现序列化和通信
 
     @Autowired
-    ProviderBootstrap providerBootstrap;
+    ProviderInvoker providerInvoker;
 
     @RequestMapping("/")
     public RpcResponse<Object> invoke(@RequestBody RpcRequest request) {
-        return providerBootstrap.invoke(request);
+        return providerInvoker.invoke(request);
     }
 
 

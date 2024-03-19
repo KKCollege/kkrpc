@@ -1,5 +1,7 @@
 package cn.kimmking.kkrpc.core.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -13,6 +15,7 @@ import java.util.List;
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/10 21:49
  */
+@Slf4j
 public class MethodUtils {
 
     public static boolean checkLocalMethod(final String method) {
@@ -44,7 +47,7 @@ public class MethodUtils {
 
     public static void main(String[] args) {
         Arrays.stream(MethodUtils.class.getMethods()).forEach(
-                m -> System.out.println(methodSign(m))
+                m -> log.debug(methodSign(m))
         );
     }
 

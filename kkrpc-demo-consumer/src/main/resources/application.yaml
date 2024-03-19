@@ -3,6 +3,7 @@ server:
 logging:
   level:
     root: error
+    cn.kimmking.kkrpc: info
 
 kkrpc:
   zkServer: localhost:2181

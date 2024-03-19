@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Data;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,6 +27,7 @@ import java.util.*;
  */
 
 @Data
+@Slf4j
 public class ProviderBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
@@ -40,30 +42,30 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @SneakyThrows
     @PostConstruct  // init-method
     public void init() {
-        System.out.println("ProviderBootstrap init...");
+        log.info("ProviderBootstrap init...");
         rc = applicationContext.getBean(RegistryCenter.class);
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
-        providers.forEach((x,y) -> System.out.println(x));
+        providers.forEach((x,y) -> log.info(x));
         providers.values().forEach(this::genInterface);
-        System.out.println("ProviderBootstrap initialized.");
+        log.info("ProviderBootstrap initialized.");
     }
 
     @SneakyThrows
     public void start() {
-        System.out.println("ProviderBootstrap start...");
+        log.info("ProviderBootstrap start...");
         rc.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
         instance = ip + "_" + port;
         skeleton.keySet().forEach(this::registerService);
-        System.out.println("ProviderBootstrap started.");
+        log.info("ProviderBootstrap started.");
     }
 
     @PreDestroy
     public void stop() {
-        System.out.println("ProviderBootstrap stop...");
+        log.info("ProviderBootstrap stop...");
         skeleton.keySet().forEach(this::unregisterService);
         rc.stop();
-        System.out.println("ProviderBootstrap stopped.");
+        log.info("ProviderBootstrap stopped.");
     }
 
     private void registerService(String service) {
@@ -92,7 +94,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         meta.setMethod(method);
         meta.setServiceImpl(impl);
         meta.setMethodSign(MethodUtils.methodSign(method));
-        System.out.println(" create a provider: " + meta);
+        log.info(" create a provider: " + meta);
         skeleton.add(service.getCanonicalName(), meta);
     }
 }

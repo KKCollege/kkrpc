@@ -5,6 +5,7 @@ import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.consumer.http.OkHttpInvoker;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -18,6 +19,7 @@ import static cn.kimmking.kkrpc.core.util.TypeUtils.castMethodResult;
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/10 20:02
  */
+@Slf4j
 public class KKInvocationHandler implements InvocationHandler {
 
     Class<?> service;
@@ -46,8 +48,9 @@ public class KKInvocationHandler implements InvocationHandler {
 
         List<String> urls = context.getRouter().route(providers);
         String url = (String) context.getLoadBalancer().choose(urls);
-        System.out.println("loadBalancer.choose(urls) ==> " + url);
+        log.debug("loadBalancer.choose(urls) ==> " + url);
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, url);
+
 
         if (rpcResponse.isStatus()) {
             return castMethodResult(method, rpcResponse.getData());

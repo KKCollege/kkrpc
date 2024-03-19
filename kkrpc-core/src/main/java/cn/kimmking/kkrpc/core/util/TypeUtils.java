@@ -2,7 +2,7 @@ package cn.kimmking.kkrpc.core.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.jetbrains.annotations.Nullable;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -16,6 +16,7 @@ import java.util.*;
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/13 20:51
  */
+@Slf4j
 public class TypeUtils {
 
 
@@ -74,26 +75,24 @@ public class TypeUtils {
     }
 
 
-    @Nullable
     public static Object castMethodResult(Method method, Object data) {
         Class<?> returnType = method.getReturnType();
         Type genericReturnType = method.getGenericReturnType();
-        System.out.println("method.getReturnType() = " + returnType);
-        System.out.println("method.getGenericReturnType() = " + genericReturnType);
+        log.debug("method.getReturnType() = " + returnType);
+        log.debug("method.getGenericReturnType() = " + genericReturnType);
         return castGeneric(data, returnType, genericReturnType);
     }
 
-    @Nullable
     public static Object castGeneric(Object data, Class<?> type, Type genericType) {
         if (data instanceof JSONObject jsonResult) {
             if (Map.class.isAssignableFrom(type)) {
                 Map resultMap = new HashMap();
-                System.out.println(genericType);
+                log.debug("castGeneric map:"+ genericType);
                 if (genericType instanceof ParameterizedType parameterizedType) {
                     Class<?> keyType = (Class<?>)parameterizedType.getActualTypeArguments()[0];
                     Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
-                    System.out.println("keyType  : " + keyType);
-                    System.out.println("valueType: " + valueType);
+                    log.debug("keyType  : " + keyType);
+                    log.debug("valueType: " + valueType);
                     jsonResult.entrySet().stream().forEach(
                             e -> {
                                 Object key = cast(e.getKey(), keyType);
@@ -121,10 +120,10 @@ public class TypeUtils {
                 return resultArray;
             } else if (List.class.isAssignableFrom(type)) {
                 List<Object> resultList = new ArrayList<>(array.length);
-                System.out.println(genericType);
+                log.debug("castGeneric list:"+ genericType);
                 if (genericType instanceof ParameterizedType parameterizedType) {
                     Type actualType = parameterizedType.getActualTypeArguments()[0];
-                    System.out.println(actualType);
+                    log.debug("actualType list:"+ actualType);
                     for (Object o : array) {
                         resultList.add(cast(o, (Class<?>) actualType));
                     }

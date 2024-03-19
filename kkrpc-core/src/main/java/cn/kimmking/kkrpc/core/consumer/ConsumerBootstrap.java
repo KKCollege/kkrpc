@@ -7,6 +7,7 @@ import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  */
 
 @Data
+@Slf4j
 public class ConsumerBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
@@ -49,7 +51,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
             List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), KKConsumer.class);
             fields.forEach(f -> {
-                System.out.println(" ===> " + f.getName());
+                log.info(" ===> " + f.getName());
                 try {
                     Class<?> service = f.getType();
                     String serviceName = service.getCanonicalName();
@@ -70,7 +72,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     private Object createFromRegisry(Class<?> service, RpcContext context, RegistryCenter rc) {
         String serviceName = service.getCanonicalName();
         List<String> providers = mapUrls(rc.fetchAll(serviceName));
-        System.out.println(" ===> map to providers: ");
+        log.info(" ===> map to providers: ");
         providers.forEach(System.out::println);
 
         rc.subscribe(serviceName, event -> {

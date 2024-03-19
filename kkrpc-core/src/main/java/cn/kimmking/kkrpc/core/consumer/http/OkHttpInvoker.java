@@ -49,6 +49,4 @@ public class OkHttpInvoker implements HttpInvoker {
             throw new RuntimeException(e);
         }
     }
-
-
 }

@@ -47,7 +47,7 @@ public class MethodUtils {
 
     public static void main(String[] args) {
         Arrays.stream(MethodUtils.class.getMethods()).forEach(
-                m -> log.debug(methodSign(m))
+                m -> System.out.println(methodSign(m))
         );
     }
 

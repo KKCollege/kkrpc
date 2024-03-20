@@ -4,6 +4,7 @@ import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.consumer.http.OkHttpInvoker;
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,11 +25,11 @@ public class KKInvocationHandler implements InvocationHandler {
 
     Class<?> service;
     RpcContext context;
-    List<String> providers;
+    List<InstanceMeta> providers;
 
     HttpInvoker httpInvoker = new OkHttpInvoker();
 
-    public KKInvocationHandler(Class<?> clazz, RpcContext context, List<String> providers) {
+    public KKInvocationHandler(Class<?> clazz, RpcContext context, List<InstanceMeta> providers) {
         this.service = clazz;
         this.context = context;
         this.providers = providers;
@@ -46,17 +47,15 @@ public class KKInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
-        List<String> urls = context.getRouter().route(providers);
-        String url = (String) context.getLoadBalancer().choose(urls);
-        log.debug("loadBalancer.choose(urls) ==> " + url);
-        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, url);
-
+        List<InstanceMeta> instances = context.getRouter().route(providers);
+        InstanceMeta instance = (InstanceMeta) context.getLoadBalancer().choose(instances);
+        log.debug("loadBalancer.choose(instances) ==> " + instance);
+        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toString());
 
         if (rpcResponse.isStatus()) {
             return castMethodResult(method, rpcResponse.getData());
         } else {
             Exception ex = rpcResponse.getEx();
-            // ex.printStackTrace();
             throw new RuntimeException(ex);
         }
     }

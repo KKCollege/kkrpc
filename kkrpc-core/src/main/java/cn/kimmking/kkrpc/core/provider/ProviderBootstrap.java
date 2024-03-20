@@ -2,6 +2,7 @@ package cn.kimmking.kkrpc.core.provider;
 
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import jakarta.annotation.PostConstruct;
@@ -33,7 +34,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     ApplicationContext applicationContext;
 
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
-    private String instance;
+    private InstanceMeta instance;
     private RegistryCenter rc;
 
     @Value("${server.port}")
@@ -55,7 +56,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         log.info("ProviderBootstrap start...");
         rc.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
-        instance = ip + "_" + port;
+        instance = InstanceMeta.http(ip, Integer.valueOf(port));
         skeleton.keySet().forEach(this::registerService);
         log.info("ProviderBootstrap started.");
     }

@@ -1,7 +1,7 @@
 package cn.kimmking.kkrpc.core.provider;
 
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
-import cn.kimmking.kkrpc.core.registry.ZkRegistryCenter;
+import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

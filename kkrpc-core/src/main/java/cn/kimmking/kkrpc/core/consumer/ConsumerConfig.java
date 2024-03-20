@@ -3,9 +3,8 @@ package cn.kimmking.kkrpc.core.consumer;
 import cn.kimmking.kkrpc.core.api.LoadBalancer;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
-import cn.kimmking.kkrpc.core.cluster.RandomLoadBalancer;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
-import cn.kimmking.kkrpc.core.registry.ZkRegistryCenter;
+import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +12,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
 
 /**
  * Description for this class.

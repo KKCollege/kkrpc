@@ -7,6 +7,7 @@ import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.registry.ChangedListener;
 import cn.kimmking.kkrpc.core.registry.Event;
+import cn.kimmking.kkrpc.core.util.MethodUtils;
 import lombok.Data;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.ApplicationContext;
@@ -51,7 +52,7 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         for (String name : names) {
             Object bean = applicationContext.getBean(name);
 
-            List<Field> fields = findAnnotatedField(bean.getClass());
+            List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), KKConsumer.class);
 
             fields.stream().forEach( f -> {
                 System.out.println(" ===> " + f.getName());
@@ -94,20 +95,6 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
     private Object createConsumer(Class<?> service, RpcContext context, List<String> providers) {
         return Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service}, new KKInvocationHandler(service, context, providers));
-    }
-
-    private List<Field> findAnnotatedField(Class<?> aClass) {
-        List<Field> result = new ArrayList<>();
-        while (aClass != null) {
-            Field[] fields = aClass.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.isAnnotationPresent(KKConsumer.class)) {
-                    result.add(f);
-                }
-            }
-            aClass = aClass.getSuperclass();
-        }
-        return result;
     }
 
 }

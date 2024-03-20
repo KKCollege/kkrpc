@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.lang.reflect.*;
@@ -14,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static cn.kimmking.kkrpc.core.util.TypeUtils.cast;
+import static cn.kimmking.kkrpc.core.util.TypeUtils.castMethodResult;
 
 /**
  * Description for this class.
@@ -50,67 +52,11 @@ public class KKInvocationHandler implements InvocationHandler {
         List<String> urls = context.getRouter().route(providers);
         String url = (String) context.getLoadBalancer().choose(urls);
         System.out.println("loadBalancer.choose(urls) ==> " + url);
-        RpcResponse rpcResponse = post(rpcRequest, url);
+        RpcResponse<Object> rpcResponse = post(rpcRequest, url);
 
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
-            Class<?> type = method.getReturnType();
-            System.out.println("method.getReturnType() = " + type);
-            if (data instanceof JSONObject jsonResult) {
-                if (Map.class.isAssignableFrom(type)) {
-                    Map resultMap = new HashMap();
-                    Type genericReturnType = method.getGenericReturnType();
-                    System.out.println(genericReturnType);
-                    if (genericReturnType instanceof ParameterizedType parameterizedType) {
-                        Class<?> keyType = (Class<?>)parameterizedType.getActualTypeArguments()[0];
-                        Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
-                        System.out.println("keyType  : " + keyType);
-                        System.out.println("valueType: " + valueType);
-                        jsonResult.entrySet().stream().forEach(
-                                e -> {
-                                    Object key = cast(e.getKey(), keyType);
-                                    Object value = cast(e.getValue(), valueType);
-                                    resultMap.put(key, value);
-                                }
-                        );
-                    }
-                    return resultMap;
-                }
-                return jsonResult.toJavaObject(type);
-            } else if (data instanceof JSONArray jsonArray) {
-                Object[] array = jsonArray.toArray();
-                if (type.isArray()) {
-                    Class<?> componentType = type.getComponentType();
-                    Object resultArray = Array.newInstance(componentType, array.length);
-                    for (int i = 0; i < array.length; i++) {
-                        if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")) {
-                            Array.set(resultArray, i, array[i]);
-                        } else {
-                            Object castObject = cast(array[i], componentType);
-                            Array.set(resultArray, i, castObject);
-                        }
-                    }
-                    return resultArray;
-                } else if (List.class.isAssignableFrom(type)) {
-                    List<Object> resultList = new ArrayList<>(array.length);
-                    Type genericReturnType = method.getGenericReturnType();
-                    System.out.println(genericReturnType);
-                    if (genericReturnType instanceof ParameterizedType parameterizedType) {
-                        Type actualType = parameterizedType.getActualTypeArguments()[0];
-                        System.out.println(actualType);
-                        for (Object o : array) {
-                            resultList.add(cast(o, (Class<?>) actualType));
-                        }
-                    } else {
-                        resultList.addAll(Arrays.asList(array));
-                    }
-                    return resultList;
-                } else {
-                    return null;
-                }
-            } else {
-                return cast(data, type);
-            }
+            return castMethodResult(method, data);
         } else {
             Exception ex = rpcResponse.getEx();
             //ex.printStackTrace();
@@ -125,7 +71,7 @@ public class KKInvocationHandler implements InvocationHandler {
             .connectTimeout(1, TimeUnit.SECONDS)
             .build();
 
-    private RpcResponse post(RpcRequest rpcRequest, String url) {
+    private RpcResponse<Object> post(RpcRequest rpcRequest, String url) {
         String reqJson = JSON.toJSONString(rpcRequest);
         System.out.println(" ===> reqJson = " + reqJson);
         Request request = new Request.Builder()
@@ -135,7 +81,7 @@ public class KKInvocationHandler implements InvocationHandler {
         try {
             String respJson = client.newCall(request).execute().body().string();
             System.out.println(" ===> respJson = " + respJson);
-            RpcResponse rpcResponse = JSON.parseObject(respJson, RpcResponse.class);
+            RpcResponse<Object> rpcResponse = JSON.parseObject(respJson, RpcResponse.class);
             return rpcResponse;
         } catch (IOException e) {
             e.printStackTrace();

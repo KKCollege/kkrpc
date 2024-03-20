@@ -93,6 +93,4 @@ public class ProviderBootstrap implements ApplicationContextAware {
         System.out.println(" create a provider: " + meta);
         skeleton.add(itfer.getCanonicalName(), meta);
     }
-
-
 }

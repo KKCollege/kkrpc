@@ -1,15 +1,12 @@
 package cn.kimmking.kkrpc.core.provider;
 
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
-import cn.kimmking.kkrpc.core.consumer.ConsumerBootstrap;
-import cn.kimmking.kkrpc.core.registry.ZkRegistryCenter;
+import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
 
 /**
  * Description for this class.

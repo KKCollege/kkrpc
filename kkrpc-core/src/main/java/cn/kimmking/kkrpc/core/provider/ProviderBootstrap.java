@@ -4,6 +4,7 @@ import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
+import cn.kimmking.kkrpc.core.meta.ServiceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -39,6 +40,12 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     @Value("${server.port}")
     private String port;
+    @Value("${app.id}")
+    public String app;
+    @Value("${app.namespace}")
+    public String namespace;
+    @Value("${app.env}")
+    public String env;
 
     @SneakyThrows
     @PostConstruct  // init-method
@@ -70,11 +77,15 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void registerService(String service) {
-        rc.register(service, instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app).namespace(namespace).env(env).name(service).build();
+        rc.register(serviceMeta, instance);
     }
 
     private void unregisterService(String service) {
-        rc.unregister(service, instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app).namespace(namespace).env(env).name(service).build();
+        rc.unregister(serviceMeta, instance);
     }
 
     private void genInterface(Object impl) {
@@ -91,10 +102,8 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void createProvider(Class<?> service, Object impl, Method method) {
-        ProviderMeta meta = new ProviderMeta();
-        meta.setMethod(method);
-        meta.setServiceImpl(impl);
-        meta.setMethodSign(MethodUtils.methodSign(method));
+        ProviderMeta meta = ProviderMeta.builder().method(method)
+                .serviceImpl(impl).methodSign(MethodUtils.methodSign(method)).build();
         log.info(" create a provider: " + meta);
         skeleton.add(service.getCanonicalName(), meta);
     }

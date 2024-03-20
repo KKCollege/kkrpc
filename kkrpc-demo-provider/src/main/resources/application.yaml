@@ -7,4 +7,8 @@ logging:
 
 kkrpc:
   zkServer: localhost:2181
-  namespace: kkrpc
+  root: kkrpc
+app:
+  id: app1
+  namespace: public
+  env: dev

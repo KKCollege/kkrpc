@@ -24,8 +24,8 @@ public class ProviderConfig {
     @Value("${kkrpc.zkServer}")
     String zkServer;
 
-    @Value("${kkrpc.namespace}")
-    String namespace;
+    @Value("${kkrpc.root}")
+    String root;
 
 
     @Bean
@@ -50,7 +50,7 @@ public class ProviderConfig {
 
     @Bean //(initMethod = "start", destroyMethod = "stop")
     public RegistryCenter provider_rc() {
-        return new ZkRegistryCenter(zkServer, namespace);
+        return new ZkRegistryCenter(zkServer, root);
     }
 
 }

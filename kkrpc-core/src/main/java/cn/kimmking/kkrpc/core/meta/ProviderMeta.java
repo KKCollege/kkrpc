@@ -1,6 +1,8 @@
 package cn.kimmking.kkrpc.core.meta;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import java.lang.reflect.Method;
 
@@ -12,6 +14,8 @@ import java.lang.reflect.Method;
  */
 
 @Data
+@Builder
+@ToString
 public class ProviderMeta {
 
     Method method;

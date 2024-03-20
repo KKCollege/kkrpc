@@ -3,6 +3,7 @@ package cn.kimmking.kkrpc.core.provider;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
+import cn.kimmking.kkrpc.core.meta.ServiceMeta;
 import cn.kimmking.kkrpc.core.util.TypeUtils;
 import org.springframework.util.MultiValueMap;
 

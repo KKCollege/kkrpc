@@ -6,9 +6,11 @@ import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
+import cn.kimmking.kkrpc.core.meta.ServiceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -31,12 +33,19 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
 
+    @Value("${app.id}")
+    public String app;
+    @Value("${app.namespace}")
+    public String namespace;
+    @Value("${app.env}")
+    public String env;
+
     private Map<String, Object> stub = new HashMap<>();
 
     public void start() {
 
-        Router router = applicationContext.getBean(Router.class);
-        LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
+        Router<?> router = applicationContext.getBean(Router.class);
+        LoadBalancer<?> loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
 
         RpcContext context = new RpcContext();
@@ -69,12 +78,13 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
     private Object createFromRegisry(Class<?> service, RpcContext context, RegistryCenter rc) {
         String serviceName = service.getCanonicalName();
-        //List<String> providers = mapUrls(rc.fetchAll(serviceName));
-        List<InstanceMeta> instances = rc.fetchAll(serviceName);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app).namespace(namespace).env(env).name(serviceName).build();
+        List<InstanceMeta> instances = rc.fetchAll(serviceMeta);
         log.info(" ===> map to providers: ");
         instances.forEach(System.out::println);
 
-        rc.subscribe(serviceName, event -> {
+        rc.subscribe(serviceMeta, event -> {
             instances.clear();
             instances.addAll(event.getData());
         });

@@ -54,7 +54,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     public void init() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(KKProvider.class);
         rc = applicationContext.getBean(RegistryCenter.class);
-        providers.forEach((x,y) -> System.out.println(x));
+        providers.keySet().forEach(System.out::println);
         providers.values().forEach(this::genInterface);
     }
 
@@ -87,13 +87,9 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private void genInterface(Object impl) {
         Arrays.stream(impl.getClass().getInterfaces()).forEach(
                 service -> {
-                    Method[] methods = service.getMethods();
-                    for (Method method : methods) {
-                        if (MethodUtils.checkLocalMethod(method)) {
-                            continue;
-                        }
-                        createProvider(service, impl, method);
-                    }
+                    Arrays.stream(service.getMethods())
+                            .filter(method -> !MethodUtils.checkLocalMethod(method))
+                            .forEach( method -> { createProvider(service, impl, method);});
                 });
     }
 

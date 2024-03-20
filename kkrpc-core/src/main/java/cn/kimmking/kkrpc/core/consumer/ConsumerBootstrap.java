@@ -5,6 +5,7 @@ import cn.kimmking.kkrpc.core.api.LoadBalancer;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
 import lombok.Data;
 import org.springframework.context.ApplicationContext;
@@ -72,24 +73,19 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createFromRegisry(Class<?> service, RpcContext context, RegistryCenter rc) {
         String serviceName = service.getCanonicalName();
-        List<String> providers = mapUrls(rc.fetchAll(serviceName));
+        List<InstanceMeta> providers = rc.fetchAll(serviceName);
         System.out.println(" ===> map to providers: ");
         providers.forEach(System.out::println);
 
         rc.subscribe(serviceName, event -> {
             providers.clear();
-            providers.addAll(mapUrls(event.getData()));
+            providers.addAll(event.getData());
         });
 
         return createConsumer(service, context, providers);
     }
 
-    private List<String> mapUrls(List<String> nodes) {
-        return nodes.stream()
-                .map(x -> "http://" + x.replace('_', ':')).collect(Collectors.toList());
-    }
-
-    private Object createConsumer(Class<?> service, RpcContext context, List<String> providers) {
+    private Object createConsumer(Class<?> service, RpcContext context, List<InstanceMeta> providers) {
         return Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service}, new KKInvocationHandler(service, context, providers));
     }

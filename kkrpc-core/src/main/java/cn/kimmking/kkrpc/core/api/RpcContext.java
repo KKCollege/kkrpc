@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.core.api;
 
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import lombok.Data;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class RpcContext {
 
     List<Filter> filters; // todo
 
-    Router router;
+    Router<InstanceMeta> router;
 
-    LoadBalancer loadBalancer;
+    LoadBalancer<InstanceMeta> loadBalancer;
 
 }

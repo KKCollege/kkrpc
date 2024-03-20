@@ -2,11 +2,9 @@ package cn.kimmking.kkrpc.core.provider;
 
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
-import cn.kimmking.kkrpc.core.api.RpcRequest;
-import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
-import cn.kimmking.kkrpc.core.util.TypeUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Data;
@@ -17,10 +15,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * 服务提供者的启动类.
@@ -36,7 +34,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     RegistryCenter rc;
 
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
-    private String instance;
+    private InstanceMeta instance;
 
     @Value("${server.port}")
     private String port;
@@ -53,7 +51,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @SneakyThrows
     public void start() {
         String ip = InetAddress.getLocalHost().getHostAddress();
-        instance = ip + "_" + port;
+        instance = InstanceMeta.http(ip, Integer.valueOf(port));
         rc.start();
         skeleton.keySet().forEach(this::registerService);
     }

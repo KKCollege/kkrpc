@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.core.registry;
 
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,5 +16,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class Event {
-    List<String> data;
+    List<InstanceMeta> data;
 }

@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.core.api;
 
+import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.registry.ChangedListener;
 
 import java.util.List;
@@ -16,18 +17,18 @@ public interface RegistryCenter {
     void stop(); // p/c
 
     // provider侧
-    void register(String service, String instance); // p
-    void unregister(String service, String instance); // p
+    void register(String service, InstanceMeta instance); // p
+    void unregister(String service, InstanceMeta instance); // p
 
     // consumer侧
-    List<String> fetchAll(String service); // c
+    List<InstanceMeta> fetchAll(String service); // c
     void subscribe(String service, ChangedListener listener);
     // void heartbeat();
 
     class StaticRegistryCenter implements RegistryCenter {
 
-        List<String> providers;
-        public StaticRegistryCenter(List<String> providers) {
+        List<InstanceMeta> providers;
+        public StaticRegistryCenter(List<InstanceMeta> providers) {
             this.providers = providers;
         }
 
@@ -42,17 +43,17 @@ public interface RegistryCenter {
         }
 
         @Override
-        public void register(String service, String instance) {
+        public void register(String service, InstanceMeta instance) {
 
         }
 
         @Override
-        public void unregister(String service, String instance) {
+        public void unregister(String service, InstanceMeta instance) {
 
         }
 
         @Override
-        public List<String> fetchAll(String service) {
+        public List<InstanceMeta> fetchAll(String service) {
             return providers;
         }
 

@@ -49,7 +49,7 @@ public class KKInvocationHandler implements InvocationHandler {
         InstanceMeta instance = context.getLoadBalancer().choose(instances);
         System.out.println("loadBalancer.choose(instances) ==> " + instance);
 
-        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toString());
+        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
 
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();

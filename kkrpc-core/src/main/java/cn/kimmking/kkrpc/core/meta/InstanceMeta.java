@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 /**
- * Description for this class.
+ * 描述服务实例的元数据.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/20 21:03

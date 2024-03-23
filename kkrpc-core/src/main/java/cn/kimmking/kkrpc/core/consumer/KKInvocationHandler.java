@@ -6,6 +6,7 @@ import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.consumer.http.OkHttpInvoker;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -19,6 +20,7 @@ import static cn.kimmking.kkrpc.core.util.TypeUtils.castMethodResult;
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/10 20:02
  */
+@Slf4j
 public class KKInvocationHandler implements InvocationHandler {
 
     Class<?> service;
@@ -47,7 +49,7 @@ public class KKInvocationHandler implements InvocationHandler {
 
         List<InstanceMeta> instances = context.getRouter().route(providers);
         InstanceMeta instance = context.getLoadBalancer().choose(instances);
-        System.out.println("loadBalancer.choose(instances) ==> " + instance);
+        log.debug("loadBalancer.choose(instances) ==> " + instance);
 
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
 

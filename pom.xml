@@ -19,7 +19,7 @@
         <module>kkrpc-core</module>
         <module>kkrpc-demo-api</module>
         <module>kkrpc-demo-provider</module>
-<!--        <module>kkrpc-demo-consumer</module>-->
+        <module>kkrpc-demo-consumer</module>
     </modules>
 
 </project>

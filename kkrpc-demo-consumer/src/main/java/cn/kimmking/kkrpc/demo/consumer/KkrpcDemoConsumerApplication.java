@@ -55,7 +55,7 @@ public class KkrpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumer_runner() {
         return x -> {
-            // testAll();
+            testAll();
         };
     }
 

@@ -6,6 +6,7 @@ import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
 import cn.kimmking.kkrpc.core.filter.CacheFilter;
+import cn.kimmking.kkrpc.core.filter.MockFilter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -61,9 +62,14 @@ public class ConsumerConfig {
         return new ZkRegistryCenter();
     }
 
+//    @Bean
+//    public Filter filter1() {
+//        return new CacheFilter();
+//    }
+
     @Bean
-    public Filter filter() {
-        return new CacheFilter();
+    public Filter filter2() {
+        return new MockFilter();
     }
 
 }

@@ -14,6 +14,10 @@ public interface Filter {
 
     // Filter next();
 
+    // A -> B -> C 有问题的
+    // - -> - -> D 还有问题
+    // - -> D  Mock
+
     Filter Default = new Filter() {
         @Override
         public RpcResponse prefilter(RpcRequest request) {

@@ -1,10 +1,7 @@
 package cn.kimmking.kkrpc.core.consumer;
 
 import cn.kimmking.kkrpc.core.annotation.KKConsumer;
-import cn.kimmking.kkrpc.core.api.LoadBalancer;
-import cn.kimmking.kkrpc.core.api.RegistryCenter;
-import cn.kimmking.kkrpc.core.api.Router;
-import cn.kimmking.kkrpc.core.api.RpcContext;
+import cn.kimmking.kkrpc.core.api.*;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.meta.ServiceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
@@ -52,10 +49,12 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         Router<InstanceMeta> router = applicationContext.getBean(Router.class);
         LoadBalancer<InstanceMeta> loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().toList();
 
         RpcContext context = new RpcContext();
         context.setRouter(router);
         context.setLoadBalancer(loadBalancer);
+        context.setFilters(filters);
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {

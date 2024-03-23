@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.core.consumer;
 
+import cn.kimmking.kkrpc.core.api.Filter;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
@@ -47,12 +48,32 @@ public class KKInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
+        for (Filter filter : this.context.getFilters()) {
+            Object preResult = filter.prefilter(rpcRequest);
+            if(preResult != null) {
+                log.debug(filter.getClass().getName() + " ==> prefilter: " + preResult);
+                return preResult;
+            }
+        }
+
         List<InstanceMeta> instances = context.getRouter().route(providers);
         InstanceMeta instance = context.getLoadBalancer().choose(instances);
         log.debug("loadBalancer.choose(instances) ==> " + instance);
 
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
+        Object result = castReturnResult(method, rpcResponse);
 
+        for (Filter filter : this.context.getFilters()) {
+            Object filterResult = filter.postfilter(rpcRequest, rpcResponse, result);
+            if(filterResult != null) {
+                return filterResult;
+            }
+        }
+
+        return result;
+    }
+
+    private static Object castReturnResult(Method method, RpcResponse<?> rpcResponse) {
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             return castMethodResult(method, data);

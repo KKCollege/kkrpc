@@ -1,6 +1,7 @@
 package cn.kimmking.kkrpc.core.api;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Description for this class.
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 
 @Data
+@ToString
 public class RpcRequest {
 
     private String service; // 接口：cn.kimmking.kkrpc.demo.api.UserService

@@ -1,0 +1,16 @@
+server:
+  port: 8088
+kkrpc:
+  providers: http://localhost:8081,http://localhost:8082,http://localhost:8083
+  zkServer: localhost:2181
+  zkRoot: kkrpc
+
+app:
+  id: app1
+  namespace: public
+  env: dev
+
+logging:
+  level:
+    root: info
+    cn.kimmking.kkrpc: debug

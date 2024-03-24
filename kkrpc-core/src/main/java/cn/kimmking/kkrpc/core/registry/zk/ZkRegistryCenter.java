@@ -41,7 +41,7 @@ public class ZkRegistryCenter implements RegistryCenter {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.builder()
                 .connectString(servers)
-                .namespace(root)
+                .namespace(root) // dubbo的group就是这个玩意儿
                 .retryPolicy(retryPolicy)
                 .build();
         log.info(" ===> zk client starting to server[" + servers + "/" + root + "].");

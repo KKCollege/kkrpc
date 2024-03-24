@@ -4,6 +4,7 @@ import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description for this class.
@@ -20,5 +21,11 @@ public class RpcContext {
     Router<InstanceMeta> router;
 
     LoadBalancer<InstanceMeta> loadBalancer;
+
+    private Map<String, String> parameters;
+    // kkrpc.color = gray
+    // kkrpc.gtrace_id
+    // gw -> service1 ->  service2(跨线程传递) ...
+    // http headers
 
 }

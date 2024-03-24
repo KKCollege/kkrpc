@@ -2,7 +2,7 @@ server:
   port: 8089
 kkrpc:
   providers: http://localhost:8081,http://localhost:8082,http://localhost:8083
-  zkServer: localhost:2181
+  zkServer: localhost:2182
   zkRoot: kkrpc
 
 app:

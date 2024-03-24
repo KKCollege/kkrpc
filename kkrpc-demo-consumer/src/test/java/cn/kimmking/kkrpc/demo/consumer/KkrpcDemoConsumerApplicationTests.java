@@ -9,7 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootTest
+@SpringBootTest(classes = {KkrpcDemoConsumerApplication.class})
 class KkrpcDemoConsumerApplicationTests {
 
     static ApplicationContext context;
@@ -18,11 +18,18 @@ class KkrpcDemoConsumerApplicationTests {
 
     @BeforeAll
     static void init() {
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+
         zkServer.start();
         //embeddedZookeeper =  new EmbeddedZookeeper("localhost:2182");
         context = SpringApplication.run(KkrpcDemoProviderApplication.class,
                 "--server.port=8084", "--kkrpc.zkServer=localhost:2182",
-                "--logging.level.cn.kimmking.kkrpc=debug");
+                "--logging.level.cn.kimmking.kkrpc=info");
     }
 
     @Test

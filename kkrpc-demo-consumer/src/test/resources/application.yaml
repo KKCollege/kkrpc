@@ -13,4 +13,4 @@ app:
 logging:
   level:
     root: info
-    cn.kimmking.kkrpc: debug
+    cn.kimmking.kkrpc: info

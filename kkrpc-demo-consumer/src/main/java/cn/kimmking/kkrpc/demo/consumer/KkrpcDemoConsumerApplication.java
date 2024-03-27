@@ -42,6 +42,11 @@ public class KkrpcDemoConsumerApplication {
         return userService.findById(id);
     }
 
+    @RequestMapping("/find/")
+    public User find(@RequestParam("timeout") int timeout) {
+        return userService.find(timeout);
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(KkrpcDemoConsumerApplication.class, args);
     }
@@ -49,7 +54,13 @@ public class KkrpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumer_runner() {
         return x -> {
-            testAll();
+
+            long start = System.currentTimeMillis();
+            userService.find(100);
+            System.out.println("userService.find take "
+                    + (System.currentTimeMillis()-start) + " ms");
+
+            // testAll();
         };
     }
 

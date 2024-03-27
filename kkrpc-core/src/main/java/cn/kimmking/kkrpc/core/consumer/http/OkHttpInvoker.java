@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Description for this class.
+ * OKHttp invoker.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/20 20:40
@@ -46,7 +46,7 @@ public class OkHttpInvoker implements HttpInvoker {
             RpcResponse<Object> rpcResponse = JSON.parseObject(respJson, RpcResponse.class);
             return rpcResponse;
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

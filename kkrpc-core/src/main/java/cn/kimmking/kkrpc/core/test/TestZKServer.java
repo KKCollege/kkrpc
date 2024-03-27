@@ -3,11 +3,10 @@ package cn.kimmking.kkrpc.core.test;
 import lombok.SneakyThrows;
 import org.apache.curator.test.InstanceSpec;
 import org.apache.curator.test.TestingCluster;
-import org.apache.curator.test.TestingZooKeeperServer;
 import org.apache.curator.utils.CloseableUtils;
 
 /**
- * Description for this class.
+ * Testing zk server.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/24 21:03

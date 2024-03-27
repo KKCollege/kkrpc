@@ -1,9 +1,6 @@
 package cn.kimmking.kkrpc.core.consumer;
 
-import cn.kimmking.kkrpc.core.api.Filter;
-import cn.kimmking.kkrpc.core.api.RpcContext;
-import cn.kimmking.kkrpc.core.api.RpcRequest;
-import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.api.*;
 import cn.kimmking.kkrpc.core.consumer.http.OkHttpInvoker;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.util.MethodUtils;
@@ -77,7 +74,12 @@ public class KKInvocationHandler implements InvocationHandler {
         if (rpcResponse.isStatus()) {
             return castMethodResult(method, rpcResponse.getData());
         } else {
-            throw new RuntimeException(rpcResponse.getEx());
+            Exception exception = rpcResponse.getEx();
+            if(exception instanceof KkrpcException ex) {
+                throw ex;
+            } else {
+                throw new KkrpcException(exception, KkrpcException.UnknownEx);
+            }
         }
     }
 }

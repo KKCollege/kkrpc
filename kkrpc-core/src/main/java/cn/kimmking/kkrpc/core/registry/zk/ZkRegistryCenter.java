@@ -1,6 +1,6 @@
 package cn.kimmking.kkrpc.core.registry.zk;
 
-import cn.kimmking.kkrpc.core.api.KkrpcException;
+import cn.kimmking.kkrpc.core.api.RpcException;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.meta.ServiceMeta;
@@ -72,7 +72,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> register to zk: " + instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "provider".getBytes());
         } catch (Exception ex) {
-          throw new KkrpcException(ex);
+          throw new RpcException(ex);
         }
     }
 
@@ -89,7 +89,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> unregister from zk: " + instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception ex) {
-            throw new KkrpcException(ex);
+            throw new RpcException(ex);
         }
     }
 
@@ -103,7 +103,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             nodes.forEach(System.out::println);
             return mapInstances(nodes);
         } catch (Exception ex) {
-            throw new KkrpcException(ex);
+            throw new RpcException(ex);
         }
     }
 

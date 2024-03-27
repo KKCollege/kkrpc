@@ -3,33 +3,33 @@ package cn.kimmking.kkrpc.core.api;
 import lombok.Data;
 
 /**
- * Description for this class.
+ * RPC 统一异常类.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/27 20:18
  */
 
 @Data
-public class KkrpcException extends RuntimeException {
+public class RpcException extends RuntimeException {
 
     private String errcode;
 
-    public KkrpcException() {
+    public RpcException() {
     }
 
-    public KkrpcException(String message) {
+    public RpcException(String message) {
         super(message);
     }
 
-    public KkrpcException(String message, Throwable cause) {
+    public RpcException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public KkrpcException(Throwable cause) {
+    public RpcException(Throwable cause) {
         super(cause);
     }
 
-    public KkrpcException(Throwable cause, String errcode) {
+    public RpcException(Throwable cause, String errcode) {
         super(cause);
         this.errcode = errcode;
     }
@@ -40,4 +40,5 @@ public class KkrpcException extends RuntimeException {
     public static final String SocketTimeoutEx = "X001" + "-" + "http_invoke_timeout";
     public static final String NoSuchMethodEx  = "X002" + "-" + "method_not_exists";
     public static final String UnknownEx  = "Z001" + "-" + "unknown";
+
 }

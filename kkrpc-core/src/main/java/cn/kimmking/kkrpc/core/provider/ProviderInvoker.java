@@ -1,6 +1,6 @@
 package cn.kimmking.kkrpc.core.provider;
 
-import cn.kimmking.kkrpc.core.api.KkrpcException;
+import cn.kimmking.kkrpc.core.api.RpcException;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
@@ -38,9 +38,9 @@ public class ProviderInvoker {
             rpcResponse.setData(result);
             return rpcResponse;
         } catch (InvocationTargetException e) {
-            rpcResponse.setEx(new KkrpcException(e.getTargetException().getMessage()));
+            rpcResponse.setEx(new RpcException(e.getTargetException().getMessage()));
         } catch (IllegalAccessException e) {
-            rpcResponse.setEx(new KkrpcException(e.getMessage()));
+            rpcResponse.setEx(new RpcException(e.getMessage()));
         }
         return rpcResponse;
     }

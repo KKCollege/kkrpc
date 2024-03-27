@@ -42,6 +42,9 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
     @Value("${app.env}")
     private String env;
 
+    @Value("${app.retry}")
+    private int retry;
+
     private Map<String, Object> stub = new HashMap<>();
 
     public void start() {
@@ -55,6 +58,8 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         context.setRouter(router);
         context.setLoadBalancer(loadBalancer);
         context.setFilters(filters);
+        context.getParameters().put("retry", ""+retry);
+        System.out.println(" ===> put retry:" + retry);
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {

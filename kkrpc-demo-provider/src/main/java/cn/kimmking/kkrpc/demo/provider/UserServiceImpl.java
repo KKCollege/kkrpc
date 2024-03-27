@@ -107,4 +107,14 @@ public class UserServiceImpl implements UserService {
         return new User(100, "KK100");
     }
 
+    public User find(int timeout) {
+        try {
+            String p = environment.getProperty("server.port");
+            if("8081".equals(p)) Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return findById(100);
+    }
+
 }

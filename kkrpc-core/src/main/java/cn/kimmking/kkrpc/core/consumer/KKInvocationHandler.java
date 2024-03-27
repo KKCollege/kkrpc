@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import static cn.kimmking.kkrpc.core.util.TypeUtils.castMethodResult;
@@ -48,29 +49,40 @@ public class KKInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
-        for (Filter filter : this.context.getFilters()) {
-            Object preResult = filter.prefilter(rpcRequest);
-            if(preResult != null) {
-                log.debug(filter.getClass().getName() + " ==> prefilter: " + preResult);
-                return preResult;
+        int retry = Integer.parseInt(context.getParameters().getOrDefault("retry", "1"));
+        while ( retry-- > 0) {
+            System.out.println(" ===> retry:" + retry);
+            try {
+                for (Filter filter : this.context.getFilters()) {
+                    Object preResult = filter.prefilter(rpcRequest);
+                    if (preResult != null) {
+                        log.debug(filter.getClass().getName() + " ==> prefilter: " + preResult);
+                        return preResult;
+                    }
+                }
+
+                List<InstanceMeta> instances = context.getRouter().route(providers);
+                InstanceMeta instance = context.getLoadBalancer().choose(instances);
+                log.debug("loadBalancer.choose(instances) ==> " + instance);
+
+                RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
+                Object result = castReturnResult(method, rpcResponse);
+
+                for (Filter filter : this.context.getFilters()) {
+                    Object filterResult = filter.postfilter(rpcRequest, rpcResponse, result);
+                    if (filterResult != null) {
+                        return filterResult;
+                    }
+                }
+                return result;
+            } catch (RuntimeException ex) {
+                ex.printStackTrace();
+                if (! (ex.getCause() instanceof SocketTimeoutException)) {
+                    break;
+                }
             }
         }
-
-        List<InstanceMeta> instances = context.getRouter().route(providers);
-        InstanceMeta instance = context.getLoadBalancer().choose(instances);
-        log.debug("loadBalancer.choose(instances) ==> " + instance);
-
-        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
-        Object result = castReturnResult(method, rpcResponse);
-
-        for (Filter filter : this.context.getFilters()) {
-            Object filterResult = filter.postfilter(rpcRequest, rpcResponse, result);
-            if(filterResult != null) {
-                return filterResult;
-            }
-        }
-
-        return result;
+        return null;
     }
 
     private static Object castReturnResult(Method method, RpcResponse<?> rpcResponse) {

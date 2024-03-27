@@ -9,6 +9,7 @@ app:
   id: app1
   namespace: public
   env: dev
+  retry: 2
 
 logging:
   level:

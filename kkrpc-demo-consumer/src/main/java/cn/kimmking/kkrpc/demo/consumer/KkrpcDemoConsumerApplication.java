@@ -49,7 +49,13 @@ public class KkrpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumer_runner() {
         return x -> {
-            testAll();
+
+            long start = System.currentTimeMillis();
+            userService.find(1200);
+            System.out.println("userService.find take "
+                    + (System.currentTimeMillis()-start) + " ms");
+
+            // testAll();
         };
     }
 

@@ -4,6 +4,7 @@ import cn.kimmking.kkrpc.core.annotation.KKConsumer;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.consumer.ConsumerConfig;
 import cn.kimmking.kkrpc.demo.api.Order;
 import cn.kimmking.kkrpc.demo.api.OrderService;
@@ -46,6 +47,15 @@ public class KkrpcDemoConsumerApplication {
     @RequestMapping("/find/")
     public User find(@RequestParam("timeout") int timeout) {
         return userService.find(timeout);
+    }
+
+    @RequestMapping("/gray/")
+    public String gray(@RequestParam("ratio") int ratio) {
+        GrayRouter grayRouter = context.getBean(GrayRouter.class);
+        if(grayRouter == null) return "No grayRouter config";
+        int old = grayRouter.getGrayRatio();
+        grayRouter.setGrayRatio(ratio);
+        return "old grayRatio is " + old + ", now grayRatio is " + ratio;
     }
 
     public static void main(String[] args) {

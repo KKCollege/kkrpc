@@ -4,6 +4,7 @@ import cn.kimmking.kkrpc.core.api.Filter;
 import cn.kimmking.kkrpc.core.api.LoadBalancer;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.api.Router;
+import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
 import cn.kimmking.kkrpc.core.filter.CacheFilter;
 import cn.kimmking.kkrpc.core.filter.MockFilter;
@@ -32,6 +33,9 @@ public class ConsumerConfig {
     @Value("${kkrpc.providers}")
     String servers;
 
+    @Value("${app.grayRatio:1}")
+    int grayRatio;
+
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
         return new ConsumerBootstrap();
@@ -55,7 +59,9 @@ public class ConsumerConfig {
 
     @Bean
     public Router<InstanceMeta> router() {
-        return Router.Default;
+        //return Router.Default;
+        System.out.println("new GrayRouter(grayRatio):" + grayRatio);
+        return new GrayRouter(grayRatio);
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")

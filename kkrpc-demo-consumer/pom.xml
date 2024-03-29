@@ -53,12 +53,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>cn.kimmking</groupId>
-            <artifactId>kkrpc-demo-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>cn.kimmking</groupId>-->
 <!--            <artifactId>kkrpc-demo-provider</artifactId>-->

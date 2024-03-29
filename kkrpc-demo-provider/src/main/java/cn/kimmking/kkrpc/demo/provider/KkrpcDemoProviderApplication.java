@@ -2,11 +2,11 @@ package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
-import cn.kimmking.kkrpc.core.provider.ProviderBootstrap;
 import cn.kimmking.kkrpc.core.provider.ProviderConfig;
 import cn.kimmking.kkrpc.core.provider.ProviderInvoker;
 import cn.kimmking.kkrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @SpringBootApplication
 @RestController
@@ -48,10 +50,15 @@ public class KkrpcDemoProviderApplication {
         return response;
     }
 
+//    @Value("#{${app.metas}}")
+//    Map<String, String> metas;
 
     @Bean
     ApplicationRunner providerRun() {
         return x -> {
+
+            //metas.forEach((k,v) -> System.out.println(k+" -> " + v));
+
             // test 1 parameter method
             RpcRequest request = new RpcRequest();
             request.setService("cn.kimmking.kkrpc.demo.api.UserService");

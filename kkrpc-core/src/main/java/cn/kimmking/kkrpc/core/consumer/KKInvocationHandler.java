@@ -37,7 +37,7 @@ public class KKInvocationHandler implements InvocationHandler {
 
     final List<InstanceMeta> halfOpenProviders = new ArrayList<>();
 
-    Map<String, SlidingTimeWindow> windows = new HashMap<>();
+    final Map<String, SlidingTimeWindow> windows = new HashMap<>();
 
     HttpInvoker httpInvoker;
 
@@ -109,17 +109,18 @@ public class KKInvocationHandler implements InvocationHandler {
                     // 故障的规则统计和隔离，
                     // 每一次异常，记录一次，统计30s的异常数。
 
-                    // todo 0901  可以加上 synchronized 关键字控制并发
-                    SlidingTimeWindow window = windows.get(url);
-                    if(window == null) {
-                        window = new SlidingTimeWindow();
-                        windows.put(url, window);
-                    }
+                    synchronized (windows) {
+                        SlidingTimeWindow window = windows.get(url);
+                        if (window == null) {
+                            window = new SlidingTimeWindow();
+                            windows.put(url, window);
+                        }
 
-                    window.record(System.currentTimeMillis());
-                    log.debug("instance {} in window with {}", url, window.getSum());
-                    if(window.getSum() >= 10) {
-                        isolate(instance);
+                        window.record(System.currentTimeMillis());
+                        log.debug("instance {} in window with {}", url, window.getSum());
+                        if (window.getSum() >= 10) {
+                            isolate(instance);
+                        }
                     }
 
                     throw e;

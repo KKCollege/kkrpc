@@ -32,7 +32,7 @@ class KkrpcDemoConsumerApplicationTests {
         System.out.println(" ====================================== ");
         context1 = SpringApplication.run(KkrpcDemoProviderApplication.class,
                 "--server.port=8094", "--kkrpc.zkServer=localhost:2182",
-                "--logging.level.cn.kimmking.kkrpc=info");
+                "--logging.level.cn.kimmking.kkrpc=info","--app.metas={dc:'bj',gray:'false',unit:'B001'}");
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         System.out.println(" =============      P8095    ========== ");
@@ -40,7 +40,7 @@ class KkrpcDemoConsumerApplicationTests {
         System.out.println(" ====================================== ");
         context2 = SpringApplication.run(KkrpcDemoProviderApplication.class,
                 "--server.port=8095", "--kkrpc.zkServer=localhost:2182",
-                "--logging.level.cn.kimmking.kkrpc=info");
+                "--logging.level.cn.kimmking.kkrpc=info","--app.metas={dc:'bj',gray:'false',unit:'B001'}");
     }
 
     @Test

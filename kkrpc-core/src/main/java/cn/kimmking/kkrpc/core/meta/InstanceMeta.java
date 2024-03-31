@@ -1,9 +1,11 @@
 package cn.kimmking.kkrpc.core.meta;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,7 +26,7 @@ public class InstanceMeta {
     private String context; // dubbo url?k1=v1
 
     private boolean status; // online or offline
-    private Map<String, String> parameters;  // idc  A B C
+    private Map<String, String> parameters = new HashMap<>();  // idc  A B C
 
     public InstanceMeta(String scheme, String host, Integer port, String context) {
         this.scheme = scheme;
@@ -43,5 +45,9 @@ public class InstanceMeta {
 
     public static InstanceMeta http(String host, Integer port) {
         return new InstanceMeta("http", host, port, "");
+    }
+
+    public String toMetas() {
+        return JSON.toJSONString(this.getParameters());
     }
 }

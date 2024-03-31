@@ -21,6 +21,8 @@ import java.util.*;
 public class TypeUtils {
 
     public static Object cast(Object origin, Class<?> type) {
+        log.debug("cast: origin = " + origin);
+        log.debug("cast: type = " + type);
         if(origin == null) return null;
         Class<?> aClass = origin.getClass();
         if(type.isAssignableFrom(aClass)) {
@@ -75,15 +77,18 @@ public class TypeUtils {
     }
 
     public static Object castMethodResult(Method method, Object data) {
+        log.debug("castMethodResult: method = " + method);
+        log.debug("castMethodResult: data = " + data);
         Class<?> type = method.getReturnType();
         Type genericReturnType = method.getGenericReturnType();
         return castGeneric(data, type, genericReturnType);
     }
 
     public static Object castGeneric(Object data, Class<?> type, Type genericReturnType) {
-        log.debug("method.getReturnType() = " + type);
-        log.debug("method.getGenericReturnType() = " + genericReturnType);
-        if (data instanceof JSONObject jsonResult) {
+        log.debug("castGeneric: data = " + data);
+        log.debug("castGeneric: method.getReturnType() = " + type);
+        log.debug("castGeneric: method.getGenericReturnType() = " + genericReturnType);
+        if (data instanceof Map map) {
             if (Map.class.isAssignableFrom(type)) {
                 Map resultMap = new HashMap();
                 log.debug(genericReturnType.toString());
@@ -92,17 +97,21 @@ public class TypeUtils {
                     Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
                     log.debug("keyType  : " + keyType);
                     log.debug("valueType: " + valueType);
-                    jsonResult.entrySet().stream().forEach(
-                            e -> {
-                                Object key = cast(e.getKey(), keyType);
-                                Object value = cast(e.getValue(), valueType);
+                    map.forEach(
+                            (k,v) -> {
+                                Object key = cast(k, keyType);
+                                Object value = cast(v, valueType);
                                 resultMap.put(key, value);
                             }
                     );
                 }
                 return resultMap;
             }
-            return jsonResult.toJavaObject(type);
+            if(data instanceof JSONObject jsonObject) {
+                return jsonObject.toJavaObject(type);
+            }else {
+                return data;
+            }
         } else if (data instanceof List list) {
             Object[] array = list.toArray();
             if (type.isArray()) {

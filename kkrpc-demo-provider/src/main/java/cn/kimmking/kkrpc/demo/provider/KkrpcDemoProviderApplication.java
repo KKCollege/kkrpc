@@ -2,7 +2,6 @@ package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
-import cn.kimmking.kkrpc.core.provider.ProviderBootstrap;
 import cn.kimmking.kkrpc.core.provider.ProviderConfig;
 import cn.kimmking.kkrpc.core.provider.ProviderInvoker;
 import cn.kimmking.kkrpc.demo.api.User;

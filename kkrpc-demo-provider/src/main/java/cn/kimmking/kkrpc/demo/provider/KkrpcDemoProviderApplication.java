@@ -56,7 +56,7 @@ public class KkrpcDemoProviderApplication {
     @Bean
     ApplicationRunner providerRun() {
         return x -> {
-            testAll();
+            //testAll();
         };
     }
 

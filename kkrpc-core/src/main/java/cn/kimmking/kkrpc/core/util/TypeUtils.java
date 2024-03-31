@@ -88,8 +88,9 @@ public class TypeUtils {
         log.debug("castGeneric: data = " + data);
         log.debug("castGeneric: method.getReturnType() = " + type);
         log.debug("castGeneric: method.getGenericReturnType() = " + genericReturnType);
-        if (data instanceof Map map) {
-            if (Map.class.isAssignableFrom(type)) {
+        if (data instanceof Map map) { // data是map的情况包括两种，一种是HashMap，一种是JSONObject
+            if (Map.class.isAssignableFrom(type)) { // 目标类型是 Map，此时data可能是map也可能是JO
+                log.debug(" ======> map -> map");
                 Map resultMap = new HashMap();
                 log.debug(genericReturnType.toString());
                 if (genericReturnType instanceof ParameterizedType parameterizedType) {
@@ -107,9 +108,14 @@ public class TypeUtils {
                 }
                 return resultMap;
             }
-            if(data instanceof JSONObject jsonObject) {
+            if(data instanceof JSONObject jsonObject) {// 此时是Pojo，且数据是JO
+                log.debug(" ======> JSONObject -> Pojo");
                 return jsonObject.toJavaObject(type);
+            }else if(!Map.class.isAssignableFrom(type)){ // 此时是Pojo类型，数据是Map
+                log.debug(" ======> map -> Pojo");
+                return new JSONObject(map).toJavaObject(type);
             }else {
+                log.debug(" ======> map -> ?");
                 return data;
             }
         } else if (data instanceof List list) {

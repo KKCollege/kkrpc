@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Description for this class.
+ * invoke the service methods in provider.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/20 20:16
@@ -41,11 +41,8 @@ public class ProviderInvoker {
         } catch (InvocationTargetException e) {
             //e.printStackTrace();
             rpcResponse.setEx(new RpcException(e.getTargetException().getMessage()));
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             //e.printStackTrace();
-            rpcResponse.setEx(new RpcException(e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
             rpcResponse.setEx(new RpcException(e.getMessage()));
         }
         return rpcResponse;
@@ -53,11 +50,11 @@ public class ProviderInvoker {
 
     private Object[] processArgs(Object[] args, Class<?>[] parameterTypes, Type[] genericParameterTypes) {
         if(args == null || args.length == 0) return args;
-        Object[] actuals = new Object[args.length];
+        Object[] actual = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
-            actuals[i] = TypeUtils.castGeneric(args[i], parameterTypes[i], genericParameterTypes[i]);
+            actual[i] = TypeUtils.castGeneric(args[i], parameterTypes[i], genericParameterTypes[i]);
         }
-        return actuals;
+        return actual;
     }
 
     private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {

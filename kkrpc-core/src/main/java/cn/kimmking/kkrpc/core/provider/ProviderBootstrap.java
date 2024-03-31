@@ -66,8 +66,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @SneakyThrows
     public void start() {
         String ip = InetAddress.getLocalHost().getHostAddress();
-        instance = InstanceMeta.http(ip, Integer.valueOf(port));
-        instance.getParameters().putAll(this.metas);
+        instance = InstanceMeta.http(ip, Integer.valueOf(port)).addParams(this.metas);
         rc.start();
         skeleton.keySet().forEach(this::registerService);
     }

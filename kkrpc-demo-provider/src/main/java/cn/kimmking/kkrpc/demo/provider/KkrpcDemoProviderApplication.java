@@ -41,7 +41,6 @@ public class KkrpcDemoProviderApplication {
         return providerInvoker.invoke(request);
     }
 
-
     @Autowired
     UserService userService;
     @RequestMapping("/ports")
@@ -56,7 +55,7 @@ public class KkrpcDemoProviderApplication {
     @Bean
     ApplicationRunner providerRun() {
         return x -> {
-            //testAll();
+            testAll();
         };
     }
 
@@ -105,6 +104,4 @@ public class KkrpcDemoProviderApplication {
         RpcResponse<Object> rpcResponse4 = invoke(request4);
         System.out.println("return : "+rpcResponse4.getData());
     }
-
-
 }

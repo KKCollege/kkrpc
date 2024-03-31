@@ -2,16 +2,10 @@ package cn.kimmking.kkrpc.demo.consumer;
 
 import cn.kimmking.kkrpc.core.annotation.KKConsumer;
 import cn.kimmking.kkrpc.core.api.Router;
-import cn.kimmking.kkrpc.core.api.RpcContext;
-import cn.kimmking.kkrpc.core.api.RpcRequest;
-import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.consumer.ConsumerConfig;
-import cn.kimmking.kkrpc.demo.api.Order;
-import cn.kimmking.kkrpc.demo.api.OrderService;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -166,7 +159,7 @@ public class KkrpcDemoConsumerApplication {
         // A 2000 -> B 1500 -> C 1200 -> D 1000
         long start = System.currentTimeMillis();
         userService.find(1100);
-//        userService.find(1100);
+        userService.find(1100);
         System.out.println("userService.find take "
                 + (System.currentTimeMillis()-start) + " ms");
     }

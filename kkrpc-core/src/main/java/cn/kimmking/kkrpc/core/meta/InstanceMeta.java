@@ -47,6 +47,11 @@ public class InstanceMeta {
         return new InstanceMeta("http", host, port, "");
     }
 
+    public InstanceMeta addParams(Map<String, String> params) {
+        this.getParameters().putAll(params);
+        return this;
+    }
+
     public String toMetas() {
         return JSON.toJSONString(this.getParameters());
     }

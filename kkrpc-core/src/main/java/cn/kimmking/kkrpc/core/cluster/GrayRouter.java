@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -14,7 +13,7 @@ import java.util.Random;
  * 灰度路由.
  *
  * // 可以做一些灰度用户，某一次请求上加灰度标记
- *
+ * // 结合蓝绿：
  * // 100 都是normal
  * // 100 都是灰度
  *

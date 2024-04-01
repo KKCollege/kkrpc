@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.kimmking</groupId>
         <artifactId>kkrpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${kkrpc.version}</version>
     </parent>
     <artifactId>kkrpc-demo-consumer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kkrpc.version}</version>
     <name>kkrpc-demo-consumer</name>
     <description>kkrpc-demo-consumer</description>
 
@@ -29,13 +29,13 @@
         <dependency>
             <groupId>cn.kimmking</groupId>
             <artifactId>kkrpc-demo-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kkrpc.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.kimmking</groupId>
             <artifactId>kkrpc-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kkrpc.version}</version>
         </dependency>
 
         <dependency>
@@ -55,14 +55,8 @@
         </dependency>
         <dependency>
             <groupId>cn.kimmking</groupId>
-            <artifactId>kkrpc-demo-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>cn.kimmking</groupId>
             <artifactId>kkrpc-demo-provider</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kkrpc.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

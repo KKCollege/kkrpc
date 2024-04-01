@@ -4,11 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.kimmking</groupId>
     <artifactId>kkrpc</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kkrpc.version}</version>
     <name>kkrpc</name>
     <description>kkrpc</description>
     <packaging>pom</packaging>
     <properties>
+        <kkrpc.version>0.0.1</kkrpc.version>
         <spring.boot.version>3.2.3</spring.boot.version>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>

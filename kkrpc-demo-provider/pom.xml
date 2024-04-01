@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.kimmking</groupId>
         <artifactId>kkrpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${kkrpc.version}</version>
     </parent>
     <artifactId>kkrpc-demo-provider</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kkrpc.version}</version>
     <name>kkrpc-demo-provider</name>
     <description>kkrpc-demo-provider</description>
 
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>cn.kimmking</groupId>
             <artifactId>kkrpc-demo-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kkrpc.version}</version>
         </dependency>
 
         <dependency>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>cn.kimmking</groupId>
             <artifactId>kkrpc-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kkrpc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

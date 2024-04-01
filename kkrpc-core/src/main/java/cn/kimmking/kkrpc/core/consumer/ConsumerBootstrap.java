@@ -48,34 +48,30 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
     @Value("${app.timeout}")
     private int timeout;
 
+    @Value("${app.faultLimit}")
+    private int faultLimit;
+
+    @Value("${app.halfOpenInitialDelay}")
+    private int halfOpenInitialDelay;
+
+    @Value("${app.halfOpenDelay}")
+    private int halfOpenDelay;
+
     private Map<String, Object> stub = new HashMap<>();
 
     public void start() {
-
-        Router<InstanceMeta> router = applicationContext.getBean(Router.class);
-        LoadBalancer<InstanceMeta> loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
-        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().toList();
-
-        RpcContext context = new RpcContext();
-        context.setRouter(router);
-        context.setLoadBalancer(loadBalancer);
-        context.setFilters(filters);
-        context.getParameters().put("app.retries", String.valueOf(retries));
-        context.getParameters().put("app.timeout", String.valueOf(timeout));
-        //context.getParameters().put("app.grayRatio", String.valueOf(grayRatio));
+        RpcContext context = createContext();
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for (String name : names) {
             Object bean = applicationContext.getBean(name);
-
             List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), KKConsumer.class);
-
             fields.stream().forEach( f -> {
+                Class<?> service = f.getType();
+                String serviceName = service.getCanonicalName();
                 log.info(" ===> " + f.getName());
                 try {
-                    Class<?> service = f.getType();
-                    String serviceName = service.getCanonicalName();
                     Object consumer = stub.get(serviceName);
                     if (consumer == null) {
                         consumer = createFromRegisry(service, context, rc);
@@ -84,11 +80,28 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
                     f.setAccessible(true);
                     f.set(bean, consumer);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    // ignore and print it
+                    log.warn(" ==> Field[{}.{}] create consumer failed.", serviceName, f.getName());
+                    log.error("Ignore and print it as: ", ex);
                 }
             });
-
         }
+    }
+
+    private RpcContext createContext() {
+        Router<InstanceMeta> router = applicationContext.getBean(Router.class);
+        LoadBalancer<InstanceMeta> loadBalancer = applicationContext.getBean(LoadBalancer.class);
+        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().toList();
+        RpcContext context = new RpcContext();
+        context.setRouter(router);
+        context.setLoadBalancer(loadBalancer);
+        context.setFilters(filters);
+        context.getParameters().put("app.retries", String.valueOf(retries));
+        context.getParameters().put("app.timeout", String.valueOf(timeout));
+        context.getParameters().put("app.halfOpenInitialDelay", String.valueOf(halfOpenInitialDelay));
+        context.getParameters().put("app.faultLimit", String.valueOf(faultLimit));
+        context.getParameters().put("app.halfOpenDelay", String.valueOf(halfOpenDelay));
+        return context;
     }
 
     private Object createFromRegisry(Class<?> service, RpcContext context, RegistryCenter rc) {

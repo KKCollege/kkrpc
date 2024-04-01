@@ -51,7 +51,12 @@ public class KKInvocationHandler implements InvocationHandler {
                 .getOrDefault("app.timeout", "1000"));
         this.httpInvoker = new OkHttpInvoker(timeout);
         this.executor = Executors.newScheduledThreadPool(1);
-        this.executor.scheduleWithFixedDelay(this::halfOpen, 10, 60, TimeUnit.SECONDS);
+        int halfOpenInitialDelay = Integer.parseInt(context.getParameters()
+                .getOrDefault("app.halfOpenInitialDelay", "10000"));
+        int halfOpenDelay = Integer.parseInt(context.getParameters()
+                .getOrDefault("app.halfOpenDelay", "60000"));
+        this.executor.scheduleWithFixedDelay(this::halfOpen, halfOpenInitialDelay,
+                halfOpenDelay, TimeUnit.MILLISECONDS);
     }
 
     private void halfOpen() {
@@ -74,6 +79,8 @@ public class KKInvocationHandler implements InvocationHandler {
 
         int retries = Integer.parseInt(context.getParameters()
                 .getOrDefault("app.retries", "1"));
+        int faultLimit = Integer.parseInt(context.getParameters()
+                .getOrDefault("app.faultLimit", "10"));
 
         while (retries -- > 0) {
             log.debug(" ===> reties: " + retries);
@@ -108,17 +115,12 @@ public class KKInvocationHandler implements InvocationHandler {
                 } catch (Exception e) {
                     // 故障的规则统计和隔离，
                     // 每一次异常，记录一次，统计30s的异常数。
-
                     synchronized (windows) {
-                        SlidingTimeWindow window = windows.get(url);
-                        if (window == null) {
-                            window = new SlidingTimeWindow();
-                            windows.put(url, window);
-                        }
+                        SlidingTimeWindow window = windows.computeIfAbsent(url, k -> new SlidingTimeWindow());
 
                         window.record(System.currentTimeMillis());
                         log.debug("instance {} in window with {}", url, window.getSum());
-                        if (window.getSum() >= 10) {
+                        if (window.getSum() >= faultLimit) {
                             isolate(instance);
                         }
                     }
@@ -130,7 +132,8 @@ public class KKInvocationHandler implements InvocationHandler {
                     if (!providers.contains(instance)) {
                         isolatedProviders.remove(instance);
                         providers.add(instance);
-                        log.debug("instance {} is recovered, isolatedProviders={}, providers={}", instance, isolatedProviders, providers);
+                        log.debug("instance {} is recovered, isolatedProviders={}, providers={}"
+                                , instance, isolatedProviders, providers);
                     }
                 }
 

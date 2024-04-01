@@ -1,10 +1,12 @@
 package cn.kimmking.kkrpc.core.provider;
 
+import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.api.RpcException;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
 import cn.kimmking.kkrpc.core.util.TypeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +21,8 @@ import java.util.Optional;
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/20 20:16
  */
+
+@Slf4j
 public class ProviderInvoker {
 
     private MultiValueMap<String, ProviderMeta> skeleton;
@@ -28,6 +32,10 @@ public class ProviderInvoker {
     }
 
     public RpcResponse<Object> invoke(RpcRequest request) {
+        log.debug(" ===> ProviderInvoker.invoke(request:{})", request);
+        if(!request.getParams().isEmpty()) {
+            request.getParams().forEach(RpcContext::setContextParameter);
+        }
         RpcResponse<Object> rpcResponse = new RpcResponse<>();
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
@@ -37,14 +45,16 @@ public class ProviderInvoker {
             Object result = method.invoke(meta.getServiceImpl(), args);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
-            return rpcResponse;
         } catch (InvocationTargetException e) {
             //e.printStackTrace();
             rpcResponse.setEx(new RpcException(e.getTargetException().getMessage()));
         } catch (IllegalAccessException | IllegalArgumentException e) {
             //e.printStackTrace();
             rpcResponse.setEx(new RpcException(e.getMessage()));
+        } finally {
+            RpcContext.ContextParameters.get().clear(); // 防止内存泄露和上下文污染
         }
+        log.debug(" ===> ProviderInvoker.invoke() = {}", rpcResponse);
         return rpcResponse;
     }
 

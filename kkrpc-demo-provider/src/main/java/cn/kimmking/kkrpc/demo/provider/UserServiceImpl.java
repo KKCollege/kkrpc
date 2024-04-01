@@ -1,6 +1,7 @@
 package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
+import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,5 +135,12 @@ public class UserServiceImpl implements UserService {
 
     public void setTimeoutPorts(String timeoutPorts) {
         this.timeoutPorts = timeoutPorts;
+    }
+
+    @Override
+    public String echoParameter(String key) {
+        System.out.println(" ====>> RpcContext.ContextParameters: ");
+        RpcContext.ContextParameters.get().forEach((k,v)-> System.out.println(k+" -> " +v));
+        return RpcContext.getContextParameter(key);
     }
 }

@@ -2,6 +2,7 @@ package cn.kimmking.kkrpc.demo.consumer;
 
 import cn.kimmking.kkrpc.core.annotation.KKConsumer;
 import cn.kimmking.kkrpc.core.api.Router;
+import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.consumer.ConsumerConfig;
 import cn.kimmking.kkrpc.demo.api.User;
@@ -162,6 +163,17 @@ public class KkrpcDemoConsumerApplication {
         userService.find(1100);
         System.out.println("userService.find take "
                 + (System.currentTimeMillis()-start) + " ms");
+
+        System.out.println("Case 19. >>===[测试通过Context跨消费者和提供者进行传参]===");
+        String Key_Version = "rpc.version";
+        String Key_Message = "rpc.message";
+        RpcContext.setContextParameter(Key_Version, "v8");
+        RpcContext.setContextParameter("rpc.message", "this is a test message");
+        String version = userService.echoParameter(Key_Version);
+        String message = userService.echoParameter("rpc.message");
+        System.out.println(" ===> echo parameter from c->p->c: " + Key_Version + " -> " + version);
+        System.out.println(" ===> echo parameter from c->p->c: " + Key_Message + " -> " + message);
+        RpcContext.ContextParameters.get().clear();
     }
 
 }

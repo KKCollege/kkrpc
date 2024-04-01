@@ -8,6 +8,7 @@ import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
 import cn.kimmking.kkrpc.core.filter.CacheFilter;
 import cn.kimmking.kkrpc.core.filter.MockFilter;
+import cn.kimmking.kkrpc.core.filter.ParameterFilter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,7 @@ public class ConsumerConfig {
 
     @Bean
     public Filter defaultFilter() {
-        return Filter.Default;
+        return new ParameterFilter();
     }
 
 //    @Bean

@@ -165,12 +165,12 @@ public class KKInvocationHandler implements InvocationHandler {
         if (rpcResponse.isStatus()) {
             return castMethodResult(method, rpcResponse.getData());
         } else {
-            Exception exception = rpcResponse.getEx();
-            if(exception instanceof RpcException ex) {
-                throw ex;
-            } else {
-                throw new RpcException(exception, RpcException.UnknownEx);
+            RpcException exception = rpcResponse.getEx();
+            if(exception != null) {
+                log.error("response error.", exception);
+                throw exception;
             }
+            return null;
         }
     }
 }

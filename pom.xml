@@ -9,7 +9,7 @@
     <description>kkrpc</description>
     <packaging>pom</packaging>
     <properties>
-        <kkrpc.version>0.0.1</kkrpc.version>
+        <kkrpc.version>0.0.2</kkrpc.version>
         <spring.boot.version>3.2.3</spring.boot.version>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>

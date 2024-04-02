@@ -19,7 +19,7 @@ import org.springframework.core.annotation.Order;
 import java.util.List;
 
 /**
- * Description for this class.
+ * Config for consumer.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/10 19:49
@@ -29,8 +29,8 @@ import java.util.List;
 @Configuration
 public class ConsumerConfig {
 
-    @Value("${kkrpc.providers}")
-    String servers;
+    @Value("${kkrpc.providers:}")
+    String[] servers;
 
     @Value("${app.grayRatio:0}")
     private int grayRatio;
@@ -59,9 +59,6 @@ public class ConsumerConfig {
     @Value("${app.halfOpenDelay:60000}")
     private int halfOpenDelay;
 
-    @Autowired
-    ApplicationContext applicationContext;
-
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
         return new ConsumerBootstrap();
@@ -72,6 +69,7 @@ public class ConsumerConfig {
     public ApplicationRunner consumerBootstrap_runner(@Autowired ConsumerBootstrap consumerBootstrap) {
         return x -> {
             log.info("consumerBootstrap starting ...");
+            System.out.println("kkrpc.providers => " + String.join(",", servers));
             consumerBootstrap.start();
             log.info("consumerBootstrap started ...");
         };

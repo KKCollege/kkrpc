@@ -4,7 +4,7 @@ import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 
 /**
- * Description for this class.
+ * Interface for http invoke.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/20 20:39

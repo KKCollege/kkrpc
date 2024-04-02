@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Description for this class.
+ * response data for RPC call.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/3/6 20:49

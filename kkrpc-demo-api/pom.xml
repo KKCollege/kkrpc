@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.kimmking</groupId>
         <artifactId>kkrpc</artifactId>
-        <version>${kkrpc.version}</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>kkrpc-demo-api</artifactId>
-    <version>${kkrpc.version}</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>kkrpc-demo-api</name>
     <description>kkrpc-demo-api</description>
 

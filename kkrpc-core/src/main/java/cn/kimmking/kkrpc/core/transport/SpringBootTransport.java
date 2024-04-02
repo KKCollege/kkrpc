@@ -22,7 +22,7 @@ public class SpringBootTransport {
     @Autowired
     ProviderInvoker providerInvoker;
 
-    @RequestMapping("/kkrpc/")
+    @RequestMapping("/kkrpc")
     public RpcResponse<Object> invoke(@RequestBody RpcRequest request) {
         return providerInvoker.invoke(request);
     }

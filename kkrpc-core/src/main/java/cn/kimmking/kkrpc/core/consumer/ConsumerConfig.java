@@ -1,13 +1,8 @@
 package cn.kimmking.kkrpc.core.consumer;
 
-import cn.kimmking.kkrpc.core.api.Filter;
-import cn.kimmking.kkrpc.core.api.LoadBalancer;
-import cn.kimmking.kkrpc.core.api.RegistryCenter;
-import cn.kimmking.kkrpc.core.api.Router;
+import cn.kimmking.kkrpc.core.api.*;
 import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
-import cn.kimmking.kkrpc.core.filter.CacheFilter;
-import cn.kimmking.kkrpc.core.filter.MockFilter;
 import cn.kimmking.kkrpc.core.filter.ParameterFilter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
@@ -16,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+
+import java.util.List;
 
 /**
  * Description for this class.
@@ -34,8 +32,35 @@ public class ConsumerConfig {
     @Value("${kkrpc.providers}")
     String servers;
 
-    @Value("${app.grayRatio}")
+    @Value("${app.grayRatio:0}")
     private int grayRatio;
+
+    @Value("${app.id:app1}")
+    private String app;
+
+    @Value("${app.namespace:public}")
+    private String namespace;
+
+    @Value("${app.env:dev}")
+    private String env;
+
+    @Value("${app.retries:1}")
+    private int retries;
+
+    @Value("${app.timeout:1000}")
+    private int timeout;
+
+    @Value("${app.faultLimit:10}")
+    private int faultLimit;
+
+    @Value("${app.halfOpenInitialDelay:10000}")
+    private int halfOpenInitialDelay;
+
+    @Value("${app.halfOpenDelay:60000}")
+    private int halfOpenDelay;
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
@@ -54,7 +79,6 @@ public class ConsumerConfig {
 
     @Bean
     public LoadBalancer<InstanceMeta> loadBalancer() {
-        //return LoadBalancer.Default;
         return new RoundRibonLoadBalancer<>();
     }
 
@@ -74,16 +98,23 @@ public class ConsumerConfig {
         return new ParameterFilter();
     }
 
-//    @Bean
-//    public Filter filter1() {
-//        return new CacheFilter();
-//    }
-
-//    @Bean
-//    public Filter filter2() {
-//        return new MockFilter();
-//    }
-
-
+    @Bean
+    public RpcContext createContext(@Autowired Router router,
+                                    @Autowired LoadBalancer loadBalancer,
+                                    @Autowired List<Filter> filters) {
+        RpcContext context = new RpcContext();
+        context.setRouter(router);
+        context.setLoadBalancer(loadBalancer);
+        context.setFilters(filters);
+        context.getParameters().put("app.id", app);
+        context.getParameters().put("app.namespace", namespace);
+        context.getParameters().put("app.env", env);
+        context.getParameters().put("app.retries", String.valueOf(retries));
+        context.getParameters().put("app.timeout", String.valueOf(timeout));
+        context.getParameters().put("app.halfOpenInitialDelay", String.valueOf(halfOpenInitialDelay));
+        context.getParameters().put("app.faultLimit", String.valueOf(faultLimit));
+        context.getParameters().put("app.halfOpenDelay", String.valueOf(halfOpenDelay));
+        return context;
+    }
 
 }

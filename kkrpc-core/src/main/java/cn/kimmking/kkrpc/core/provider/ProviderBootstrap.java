@@ -33,26 +33,24 @@ import java.util.Map;
 @Slf4j
 public class ProviderBootstrap implements ApplicationContextAware {
 
-    ApplicationContext applicationContext;
-    RegistryCenter rc;
-
+    private ApplicationContext applicationContext;
+    private RegistryCenter rc;
+    private String port;
+    private String app;
+    private String namespace;
+    private String env;
+    private Map<String, String> metas;
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
     private InstanceMeta instance;
 
-    @Value("${server.port}")
-    private String port;
-
-    @Value("${app.id}")
-    private String app;
-
-    @Value("${app.namespace}")
-    private String namespace;
-
-    @Value("${app.env}")
-    private String env;
-
-    @Value("#{${app.metas}}")  //Spel
-    Map<String, String> metas;
+    public ProviderBootstrap(String port, String app, String namespace,
+                             String env, Map<String, String> metas) {
+        this.port = port;
+        this.app = app;
+        this.namespace = namespace;
+        this.env = env;
+        this.metas = metas;
+    }
 
     @SneakyThrows
     @PostConstruct  // init-method

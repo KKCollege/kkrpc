@@ -2,7 +2,7 @@ package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
-import cn.kimmking.kkrpc.core.provider.ProviderConfig;
+import cn.kimmking.kkrpc.core.config.ProviderConfig;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;

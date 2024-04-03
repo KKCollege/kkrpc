@@ -4,7 +4,7 @@ import cn.kimmking.kkrpc.core.annotation.KKConsumer;
 import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.cluster.GrayRouter;
-import cn.kimmking.kkrpc.core.consumer.ConsumerConfig;
+import cn.kimmking.kkrpc.core.config.ConsumerConfig;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

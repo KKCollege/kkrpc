@@ -1,7 +1,7 @@
 package cn.kimmking.kkrpc.core.annotation;
 
-import cn.kimmking.kkrpc.core.consumer.ConsumerConfig;
-import cn.kimmking.kkrpc.core.provider.ProviderConfig;
+import cn.kimmking.kkrpc.core.config.ConsumerConfig;
+import cn.kimmking.kkrpc.core.config.ProviderConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

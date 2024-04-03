@@ -31,16 +31,28 @@ class KkrpcDemoConsumerApplicationTests {
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         context1 = SpringApplication.run(KkrpcDemoProviderApplication.class,
-                "--server.port=8094", "--kkrpc.zkServer=localhost:2182",
-                "--logging.level.cn.kimmking.kkrpc=info","--app.metas={dc:'bj',gray:'false',unit:'B001'}");
+                "--server.port=8094",
+                "--kkrpc.zk.server=localhost:2182",
+                "--kkrpc.app.env=test",
+                "--logging.level.cn.kimmking.kkrpc=info",
+                "--kkrpc.provider.metas.dc=bj",
+                "--kkrpc.provider.metas.gray=false",
+                "--kkrpc.provider.metas.unit=B001"
+        );
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         System.out.println(" =============      P8095    ========== ");
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         context2 = SpringApplication.run(KkrpcDemoProviderApplication.class,
-                "--server.port=8095", "--kkrpc.zkServer=localhost:2182",
-                "--logging.level.cn.kimmking.kkrpc=info","--app.metas={dc:'bj',gray:'false',unit:'B001'}");
+                "--server.port=8095",
+                "--kkrpc.zk.server=localhost:2182",
+                "--kkrpc.app.env=test",
+                "--logging.level.cn.kimmking.kkrpc=info",
+                "--kkrpc.provider.metas.dc=bj",
+                "--kkrpc.provider.metas.gray=false",
+                "--kkrpc.provider.metas.unit=B002"
+        );
     }
 
     @Test

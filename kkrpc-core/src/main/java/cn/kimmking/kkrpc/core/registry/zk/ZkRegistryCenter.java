@@ -41,8 +41,14 @@ public class ZkRegistryCenter implements RegistryCenter {
     private CuratorFramework client = null;
     private List<TreeCache> caches = new ArrayList<>();
 
+    private boolean running = false;
+
     @Override
-    public void start() {
+    public synchronized void start() {
+        if(running) {
+            log.info(" ===> zk client has started to server[" + servers + "/" + root + "], ignored.");
+            return;
+        }
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.builder()
                 .connectString(servers)
@@ -54,7 +60,11 @@ public class ZkRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
+        if(!running) {
+            log.info(" ===> zk client isn't running to server[" + servers + "/" + root + "], ignored.");
+            return;
+        }
         log.info(" ===> zk tree cache closed.");
         caches.forEach(TreeCache::close);
         log.info(" ===> zk client stopped.");

@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>cn.kimmking</groupId>
+        <groupId>io.github.kimmking</groupId>
         <artifactId>kkrpc</artifactId>
         <version>${kkrpc.version}</version>
     </parent>
@@ -27,7 +27,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>cn.kimmking</groupId>
+            <groupId>io.github.kimmking</groupId>
             <artifactId>kkrpc-demo-api</artifactId>
             <version>${kkrpc.version}</version>
         </dependency>
@@ -43,7 +43,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>cn.kimmking</groupId>
+            <groupId>io.github.kimmking</groupId>
             <artifactId>kkrpc-core</artifactId>
             <version>${kkrpc.version}</version>
         </dependency>

@@ -38,7 +38,7 @@
     </developers>
 
     <properties>
-        <kkrpc.version>0.0.1</kkrpc.version>
+        <kkrpc.version>0.0.2</kkrpc.version>
         <spring.boot.version>3.2.3</spring.boot.version>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -147,18 +147,6 @@
                     <doclint>none</doclint>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.4.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <tokenAuth>true</tokenAuth>
-                    <autoPublish>true</autoPublish>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -181,6 +169,26 @@
                             </execution>
                         </executions>
                     </plugin>
+
+<!--                    配置方式：https://central.sonatype.org/publish/publish-portal-maven/#deploymentname -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.4.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
+                            <autoPublish>true</autoPublish>
+                            <excludeArtifacts>
+<!--                                <artifact>kkrpc-core</artifact>-->
+                                <excludeArtifact>kkrpc-demo-api</excludeArtifact>
+                                <excludeArtifact>kkrpc-demo-provider</excludeArtifact>
+                                <excludeArtifact>kkrpc-demo-consumer</excludeArtifact>
+                            </excludeArtifacts>
+                        </configuration>
+                    </plugin>
+
                 </plugins>
             </build>
         </profile>

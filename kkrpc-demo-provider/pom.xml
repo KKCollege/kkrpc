@@ -12,6 +12,10 @@
     <name>kkrpc-demo-provider</name>
     <description>kkrpc-demo-provider</description>
 
+    <properties>
+        <skip_maven_deploy>true</skip_maven_deploy>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

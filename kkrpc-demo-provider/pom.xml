@@ -12,10 +12,6 @@
     <name>kkrpc-demo-provider</name>
     <description>kkrpc-demo-provider</description>
 
-    <properties>
-        <skip_maven_deploy>true</skip_maven_deploy>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -63,6 +59,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.3</version>
                 <configuration>
                     <classifier>boot</classifier>
                     <excludes>

@@ -4,10 +4,13 @@ import cn.kimmking.kkrpc.core.api.RpcException;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
+import cn.kimmking.kkrpc.core.config.ProviderConfigProperties;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +28,7 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 @Import({ProviderConfig.class})
+@EnableApolloConfig
 public class KkrpcDemoProviderApplication {
 
     public static void main(String[] args) {
@@ -32,6 +36,17 @@ public class KkrpcDemoProviderApplication {
     }
 
     // 使用HTTP + JSON 来实现序列化和通信
+
+    @Value("${kkrpc.provider.test}")
+    String test;
+
+    @Autowired
+    ProviderConfigProperties providerConfigProperties;
+
+    @RequestMapping("/test")
+    public String test() {
+        return test + "_" + providerConfigProperties.getTest();
+    }
 
     @Autowired
     UserService userService;

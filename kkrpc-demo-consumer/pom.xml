@@ -12,10 +12,6 @@
     <name>kkrpc-demo-consumer</name>
     <description>kkrpc-demo-consumer</description>
 
-    <properties>
-        <skip_maven_deploy>true</skip_maven_deploy>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>

@@ -3,9 +3,8 @@ package cn.kimmking.kkrpc.core.config;
 import cn.kimmking.kkrpc.core.api.*;
 import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
-import cn.kimmking.kkrpc.core.config.ConsumerConfigProperties;
 import cn.kimmking.kkrpc.core.consumer.ConsumerBootstrap;
-import cn.kimmking.kkrpc.core.filter.ParameterFilter;
+import cn.kimmking.kkrpc.core.filter.ContextParameterFilter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +70,7 @@ public class ConsumerConfig {
 
     @Bean
     public Filter defaultFilter() {
-        return new ParameterFilter();
+        return new ContextParameterFilter();
     }
 
     @Bean

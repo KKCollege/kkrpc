@@ -37,7 +37,8 @@ class KkrpcDemoConsumerApplicationTests {
                 "--logging.level.cn.kimmking.kkrpc=info",
                 "--kkrpc.provider.metas.dc=bj",
                 "--kkrpc.provider.metas.gray=false",
-                "--kkrpc.provider.metas.unit=B001"
+                "--kkrpc.provider.metas.unit=B001",
+                "--kkrpc.provider.metas.tc=300"
         );
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
@@ -51,7 +52,8 @@ class KkrpcDemoConsumerApplicationTests {
                 "--logging.level.cn.kimmking.kkrpc=info",
                 "--kkrpc.provider.metas.dc=bj",
                 "--kkrpc.provider.metas.gray=false",
-                "--kkrpc.provider.metas.unit=B002"
+                "--kkrpc.provider.metas.unit=B002",
+                "--kkrpc.provider.metas.tc=300"
         );
     }
 

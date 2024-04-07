@@ -8,10 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 /**
- * Description for this class.
+ * Apollo config changed listener.
  *
  * @Author : kimmking(kimmking@apache.org)
  * @create 2024/4/6 23:51

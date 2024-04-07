@@ -11,7 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 
 @Data
-//@Configuration
 @ConfigurationProperties(prefix = "kkrpc.app")
 public class AppProperties {
 

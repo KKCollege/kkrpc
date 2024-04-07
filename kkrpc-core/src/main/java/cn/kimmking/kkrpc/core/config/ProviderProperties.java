@@ -14,11 +14,7 @@ import java.util.Map;
  */
 
 @Data
-//@Configuration
 @ConfigurationProperties(prefix = "kkrpc.provider")
-//@EnableApolloConfig
-//@RefreshScope
-//@ImportAutoConfiguration(RefreshAutoConfiguration.class)
 public class ProviderProperties {
 
     // for provider

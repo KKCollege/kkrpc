@@ -2,15 +2,12 @@ package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
-import cn.kimmking.kkrpc.core.config.ApolloChangedListener;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
-import cn.kimmking.kkrpc.core.config.ProviderProperties;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

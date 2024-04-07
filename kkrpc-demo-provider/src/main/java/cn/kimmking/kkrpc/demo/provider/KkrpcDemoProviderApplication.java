@@ -45,16 +45,16 @@ public class KkrpcDemoProviderApplication {
 
     // 使用HTTP + JSON 来实现序列化和通信
 
-    @Value("${kkrpc.provider.test}")
-    String test;
-
-    @Autowired
-    ProviderProperties providerProperties;
-
-    @RequestMapping("/test")
-    public String test() {
-        return test + "_" + providerProperties.getTest();
-    }
+//    @Value("${kkrpc.provider.test}")
+//    String test;
+//
+//    @Autowired
+//    ProviderProperties providerProperties;
+//
+//    @RequestMapping("/test")
+//    public String test() {
+//        return test + "_" + providerProperties.getTest();
+//    }
 
     @Autowired
     UserService userService;

@@ -24,7 +24,6 @@ import org.springframework.core.annotation.Order;
 
 @Slf4j
 @Configuration
-//@Component
 @Import({ProviderProperties.class, AppProperties.class,SpringBootTransport.class})
 public class ProviderConfig {
 
@@ -32,17 +31,16 @@ public class ProviderConfig {
     private String port;
 
     @Bean
+    @ConditionalOnMissingBean
+    ApolloChangedListener provider_apolloChangedListener() {
+        return new ApolloChangedListener();
+    }
+
+    @Bean
     ProviderBootstrap providerBootstrap(@Autowired AppProperties ap,
                                         @Autowired ProviderProperties pp) {
         return new ProviderBootstrap(port, ap, pp);
     }
-
-//    @Bean
-////    @RefreshScope
-//    ProviderConfigProperties providerConfigProperties() {
-//        return new ProviderConfigProperties();
-//    }
-
 
     @Bean
     ProviderInvoker providerInvoker(@Autowired ProviderBootstrap providerBootstrap) {

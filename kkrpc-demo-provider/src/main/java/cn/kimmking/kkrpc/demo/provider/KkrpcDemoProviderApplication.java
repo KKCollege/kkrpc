@@ -31,13 +31,12 @@ import java.util.Map;
 @SpringBootApplication
 @EnableApolloConfig
 @Import({ProviderConfig.class})
-//@ImportAutoConfiguration({ProviderConfig.class})
 public class KkrpcDemoProviderApplication {
 
-    @Bean
-    ApolloChangedListener apolloChangedListener() {
-        return new ApolloChangedListener();
-    }
+//    @Bean
+//    ApolloChangedListener apolloChangedListener() {
+//        return new ApolloChangedListener();
+//    }
 
 
     public static void main(String[] args) {

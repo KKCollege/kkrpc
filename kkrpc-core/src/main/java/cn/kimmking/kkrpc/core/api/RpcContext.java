@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.core.api;
 
+import cn.kimmking.kkrpc.core.config.ConsumerProperties;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import lombok.Data;
 
@@ -24,6 +25,8 @@ public class RpcContext {
     LoadBalancer<InstanceMeta> loadBalancer;
 
     private Map<String, String> parameters = new HashMap<>();
+
+    private ConsumerProperties consumerProperties;
 
     public String param(String key) {
         return parameters.get(key);

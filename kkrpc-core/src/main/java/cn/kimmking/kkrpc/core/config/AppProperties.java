@@ -2,7 +2,6 @@ package cn.kimmking.kkrpc.core.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * config app properties.
@@ -12,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Data
-@Configuration
+//@Configuration
 @ConfigurationProperties(prefix = "kkrpc.app")
-public class AppConfigProperties {
+public class AppProperties {
 
     // for app instance
     private String id = "app1";

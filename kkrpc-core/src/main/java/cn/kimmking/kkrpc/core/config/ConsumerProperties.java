@@ -1,8 +1,6 @@
 package cn.kimmking.kkrpc.core.config;
 
-import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "kkrpc.consumer")
 
-public class ConsumerConfigProperties {
+public class ConsumerProperties {
 
     // for ha and governance
     private int retries = 1;

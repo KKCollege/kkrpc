@@ -24,22 +24,25 @@ import org.springframework.core.annotation.Order;
 
 @Slf4j
 @Configuration
-@Import({AppConfigProperties.class,ProviderConfigProperties.class,SpringBootTransport.class})
+//@Component
+@Import({ProviderProperties.class, AppProperties.class,SpringBootTransport.class})
 public class ProviderConfig {
 
     @Value("${server.port:8080}")
     private String port;
 
-    @Autowired
-    AppConfigProperties appConfigProperties;
-
-    @Autowired
-    ProviderConfigProperties providerConfigProperties;
-
     @Bean
-    ProviderBootstrap providerBootstrap() {
-        return new ProviderBootstrap(port, appConfigProperties, providerConfigProperties);
+    ProviderBootstrap providerBootstrap(@Autowired AppProperties ap,
+                                        @Autowired ProviderProperties pp) {
+        return new ProviderBootstrap(port, ap, pp);
     }
+
+//    @Bean
+////    @RefreshScope
+//    ProviderConfigProperties providerConfigProperties() {
+//        return new ProviderConfigProperties();
+//    }
+
 
     @Bean
     ProviderInvoker providerInvoker(@Autowired ProviderBootstrap providerBootstrap) {

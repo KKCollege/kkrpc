@@ -2,8 +2,8 @@ package cn.kimmking.kkrpc.core.provider;
 
 import cn.kimmking.kkrpc.core.annotation.KKProvider;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
-import cn.kimmking.kkrpc.core.config.AppConfigProperties;
-import cn.kimmking.kkrpc.core.config.ProviderConfigProperties;
+import cn.kimmking.kkrpc.core.config.AppProperties;
+import cn.kimmking.kkrpc.core.config.ProviderProperties;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
 import cn.kimmking.kkrpc.core.meta.ProviderMeta;
 import cn.kimmking.kkrpc.core.meta.ServiceMeta;
@@ -37,13 +37,13 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private RegistryCenter rc;
     private String port;
-    private AppConfigProperties appProperties;
-    private ProviderConfigProperties providerProperties;
+    private AppProperties appProperties;
+    private ProviderProperties providerProperties;
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
     private InstanceMeta instance;
 
-    public ProviderBootstrap(String port, AppConfigProperties appProperties,
-                             ProviderConfigProperties providerProperties) {
+    public ProviderBootstrap(String port, AppProperties appProperties,
+                             ProviderProperties providerProperties) {
         this.port = port;
         this.appProperties = appProperties;
         this.providerProperties = providerProperties;

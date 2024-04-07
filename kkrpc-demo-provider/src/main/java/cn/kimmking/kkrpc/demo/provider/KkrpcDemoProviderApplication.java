@@ -1,10 +1,10 @@
 package cn.kimmking.kkrpc.demo.provider;
 
-import cn.kimmking.kkrpc.core.api.RpcException;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.config.ApolloChangedListener;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
-import cn.kimmking.kkrpc.core.config.ProviderConfigProperties;
+import cn.kimmking.kkrpc.core.config.ProviderProperties;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +27,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootApplication
 @RestController
-@Import({ProviderConfig.class})
+@SpringBootApplication
 @EnableApolloConfig
+@Import({ProviderConfig.class})
+//@ImportAutoConfiguration({ProviderConfig.class})
 public class KkrpcDemoProviderApplication {
+
+    @Bean
+    ApolloChangedListener apolloChangedListener() {
+        return new ApolloChangedListener();
+    }
+
 
     public static void main(String[] args) {
         SpringApplication.run(KkrpcDemoProviderApplication.class, args);
@@ -41,11 +50,11 @@ public class KkrpcDemoProviderApplication {
     String test;
 
     @Autowired
-    ProviderConfigProperties providerConfigProperties;
+    ProviderProperties providerProperties;
 
     @RequestMapping("/test")
     public String test() {
-        return test + "_" + providerConfigProperties.getTest();
+        return test + "_" + providerProperties.getTest();
     }
 
     @Autowired
@@ -60,9 +69,12 @@ public class KkrpcDemoProviderApplication {
     }
 
     @Bean
-    ApplicationRunner providerRun() {
+    ApplicationRunner providerRun(@Autowired ApplicationContext context) {
         return x -> {
-            testAll();
+
+            ConfigurationPropertiesRebinder rebinder = context.getBean(ConfigurationPropertiesRebinder.class);
+            System.out.println(rebinder);
+            // testAll();
         };
     }
 

@@ -15,7 +15,7 @@ GET http://localhost:8081/test
 
 
 ### 获取用户信息
-POST http://localhost:8082/
+POST http://localhost:8081/kkrpc
 Content-Type: application/json
 
 {

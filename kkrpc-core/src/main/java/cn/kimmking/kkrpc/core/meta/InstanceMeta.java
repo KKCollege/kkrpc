@@ -3,6 +3,7 @@ package cn.kimmking.kkrpc.core.meta;
 import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"scheme", "host", "port", "context"})
 public class InstanceMeta {
 
     private String scheme;

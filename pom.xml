@@ -5,8 +5,8 @@
     <groupId>io.github.kimmking</groupId>
     <artifactId>kkrpc</artifactId>
     <version>${kkrpc.version}</version>
-    <name>kkrpc</name>
-    <description>kkrpc</description>
+    <name>kkrpc-parent</name>
+    <description>kkrpc parent</description>
     <packaging>pom</packaging>
     <url>https://github.com/KKCollege/kkrpc</url>
 
@@ -38,13 +38,15 @@
     </developers>
 
     <properties>
-        <kkrpc.version>0.0.5</kkrpc.version>
-        <spring.boot.version>3.2.3</spring.boot.version>
+        <kkrpc.version>0.0.6-SNAPSHOT</kkrpc.version>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <spring.boot.version>3.2.3</spring.boot.version>
+        <apollo.version>2.2.0</apollo.version>
     </properties>
 
     <modules>

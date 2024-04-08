@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -32,6 +33,7 @@ public class ProviderConfig {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "apollo.bootstrap", value = "enabled")
     ApolloChangedListener provider_apolloChangedListener() {
         return new ApolloChangedListener();
     }
@@ -43,16 +45,16 @@ public class ProviderConfig {
     }
 
     @Bean
-    ProviderInvoker providerInvoker(@Autowired ProviderBootstrap providerBootstrap) {
-        return new ProviderInvoker(providerBootstrap);
+    ProviderInvoker providerInvoker(@Autowired ProviderBootstrap provider) {
+        return new ProviderInvoker(provider);
     }
 
     @Bean
     @Order(Integer.MIN_VALUE)
-    public ApplicationRunner providerBootstrap_runner(@Autowired ProviderBootstrap providerBootstrap) {
+    public ApplicationRunner providerBootstrap_runner(@Autowired ProviderBootstrap provider) {
         return x -> {
             log.info("providerBootstrap starting ...");
-            providerBootstrap.start();
+            provider.start();
             log.info("providerBootstrap started ...");
         };
     }

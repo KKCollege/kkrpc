@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.demo.provider;
 
+import cn.kimmking.kkrpc.core.config.ProviderProperties;
 import cn.kimmking.kkrpc.core.test.TestZKServer;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.mockserver.ApolloTestingServer;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -17,7 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class KkrpcDemoProviderApplicationTests {
 
     static TestZKServer zkServer = new TestZKServer();
-    //static ApolloTestingServer apollo = new ApolloTestingServer();
+    static ApolloTestingServer apollo = new ApolloTestingServer();
+
+    @Autowired
+    ProviderProperties providerProperties;
 
     @SneakyThrows
     @BeforeAll
@@ -28,12 +33,12 @@ class KkrpcDemoProviderApplicationTests {
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         zkServer.start();
-//        System.out.println(" ====================================== ");
-//        System.out.println(" ====================================== ");
-//        System.out.println(" ===========     mock apollo    ======= ");
-//        System.out.println(" ====================================== ");
-//        System.out.println(" ====================================== ");
-//        apollo.start();
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ===========     mock apollo    ======= ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        apollo.start();
     }
 
     @Test
@@ -44,12 +49,20 @@ class KkrpcDemoProviderApplicationTests {
         System.out.println("....  ApolloClientSystemConsts.APOLLO_CONFIG_SERVICE  .....");
     }
 
+    @Test
+    void printProviderProperties() {
+        System.out.println(" ===> KkrpcDemoProviderApplicationTests  .... ");
+        System.out.println("....  providerProperties  .....");
+        System.out.println(providerProperties);
+        System.out.println("....  providerProperties  .....");
+    }
+
     @AfterAll
     static void destory() {
         System.out.println(" ===========     stop zookeeper server    ======= ");
         zkServer.stop();
-//        System.out.println(" ===========     stop apollo mockserver   ======= ");
-//        apollo.close();
+        System.out.println(" ===========     stop apollo mockserver   ======= ");
+        apollo.close();
         System.out.println(" ===========     destroy in after all     ======= ");
     }
 

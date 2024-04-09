@@ -32,5 +32,5 @@ apollo:
 logging:
   level:
     root: info
-    cn.kimmking.kkrpc: debug
-    com.ctrip: debug
+    cn.kimmking.kkrpc: info
+    com.ctrip: info

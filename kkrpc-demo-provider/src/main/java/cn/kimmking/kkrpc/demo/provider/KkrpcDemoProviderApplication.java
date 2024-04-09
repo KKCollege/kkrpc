@@ -3,6 +3,7 @@ package cn.kimmking.kkrpc.demo.provider;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
+import cn.kimmking.kkrpc.core.config.ProviderProperties;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
@@ -70,7 +71,7 @@ public class KkrpcDemoProviderApplication {
 
             ConfigurationPropertiesRebinder rebinder = context.getBean(ConfigurationPropertiesRebinder.class);
             System.out.println(rebinder);
-            // testAll();
+            testAll();
         };
     }
 

@@ -2,6 +2,7 @@ package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
+import cn.kimmking.kkrpc.core.config.ApolloChangedListener;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
 import cn.kimmking.kkrpc.core.config.ProviderProperties;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
@@ -31,10 +32,10 @@ import java.util.Map;
 @Import({ProviderConfig.class})
 public class KkrpcDemoProviderApplication {
 
-//    @Bean
-//    ApolloChangedListener apolloChangedListener() {
-//        return new ApolloChangedListener();
-//    }
+    @Bean
+    ApolloChangedListener apolloChangedListener() {
+        return new ApolloChangedListener();
+    }
 
 
     public static void main(String[] args) {
@@ -46,13 +47,14 @@ public class KkrpcDemoProviderApplication {
 //    @Value("${kkrpc.provider.test}")
 //    String test;
 //
-//    @Autowired
-//    ProviderProperties providerProperties;
-//
-//    @RequestMapping("/test")
-//    public String test() {
-//        return test + "_" + providerProperties.getTest();
-//    }
+    @Autowired
+    ProviderProperties providerProperties;
+
+    @RequestMapping("/metas")
+    public String meta() {
+        System.out.println(System.identityHashCode(providerProperties.getMetas()));
+        return providerProperties.getMetas().toString();
+    }
 
     @Autowired
     UserService userService;
@@ -68,6 +70,9 @@ public class KkrpcDemoProviderApplication {
     @Bean
     ApplicationRunner providerRun(@Autowired ApplicationContext context) {
         return x -> {
+
+            System.out.println(" =====> providerProperties.getMetas()");
+            providerProperties.getMetas().forEach((k,v)->System.out.println(k+":"+v));
 
             ConfigurationPropertiesRebinder rebinder = context.getBean(ConfigurationPropertiesRebinder.class);
             System.out.println(rebinder);

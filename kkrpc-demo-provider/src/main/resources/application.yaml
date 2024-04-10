@@ -18,8 +18,9 @@ kkrpc:
 
 logging:
   level:
-    root: debug
+    root: error
     cn.kimmking.kkrpc: debug
+    com.ctrip: debug
 
 app:
   id: app1

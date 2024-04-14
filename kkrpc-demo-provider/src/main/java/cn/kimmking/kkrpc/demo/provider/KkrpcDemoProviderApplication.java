@@ -5,6 +5,7 @@ import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.config.ApolloChangedListener;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
 import cn.kimmking.kkrpc.core.config.ProviderProperties;
+import cn.kimmking.kkrpc.core.config.RegistryCenterConfig;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
@@ -29,7 +30,7 @@ import java.util.Map;
 @RestController
 @SpringBootApplication
 @EnableApolloConfig
-@Import({ProviderConfig.class})
+@Import({ProviderConfig.class, RegistryCenterConfig.class})
 public class KkrpcDemoProviderApplication {
 
     @Bean

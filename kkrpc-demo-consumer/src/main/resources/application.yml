@@ -1,0 +1,39 @@
+apollo:
+    autoUpdateInjectedSpringProperties: true
+    bootstrap:
+        eagerLoad:
+            enabled: false
+        enabled: true
+        namespaces: app1
+    cacheDir: /opt/data/
+    cluster: default
+    meta: http://localhost:8080
+app:
+    id: app1
+
+kkregistry:
+    enabled: true
+    servers: http://localhost:8484
+
+kkrpc:
+    app:
+        env: dev
+        id: app1
+        namespace: public
+    consumer:
+        faultLimit: 10
+        grayRatio: 33
+        halfOpenDelay: 60000
+        halfOpenInitialDelay: 10000
+        retries: 2
+        timeout: 1000
+    zk:
+        root: kkrpc
+        server: localhost:2181
+
+logging:
+    level:
+        cn.kimmking.kkrpc: info
+        root: error
+server:
+    port: 8088

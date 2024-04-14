@@ -5,6 +5,7 @@ import cn.kimmking.kkrpc.core.api.Router;
 import cn.kimmking.kkrpc.core.api.RpcContext;
 import cn.kimmking.kkrpc.core.cluster.GrayRouter;
 import cn.kimmking.kkrpc.core.config.ConsumerConfig;
+import cn.kimmking.kkrpc.core.config.RegistryCenterConfig;
 import cn.kimmking.kkrpc.demo.api.User;
 import cn.kimmking.kkrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 @SpringBootApplication
 @RestController
-@Import({ConsumerConfig.class})
+@Import({ConsumerConfig.class, RegistryCenterConfig.class})
 public class KkrpcDemoConsumerApplication {
 
     @Autowired

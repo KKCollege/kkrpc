@@ -2,6 +2,7 @@ package cn.kimmking.kkrpc.core.annotation;
 
 import cn.kimmking.kkrpc.core.config.ConsumerConfig;
 import cn.kimmking.kkrpc.core.config.ProviderConfig;
+import cn.kimmking.kkrpc.core.config.RegistryCenterConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -17,7 +18,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
-@Import({ProviderConfig.class, ConsumerConfig.class})
+@Import({ProviderConfig.class, ConsumerConfig.class, RegistryCenterConfig.class})
 public @interface EnableKkrpc {
 
 }

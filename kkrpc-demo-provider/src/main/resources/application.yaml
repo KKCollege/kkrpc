@@ -15,6 +15,8 @@ kkrpc:
       gray: false
       unit: B001
       tc: 300
+kkregistry:
+  servers: http://localhost:8484
 
 logging:
   level:

@@ -1,7 +1,5 @@
 package cn.kimmking.kkrpc.core.util;
 
-import cn.kimmking.kkrpc.core.annotation.KKConsumer;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

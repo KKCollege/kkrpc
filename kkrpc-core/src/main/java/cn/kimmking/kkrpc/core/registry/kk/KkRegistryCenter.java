@@ -10,6 +10,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,20 +32,45 @@ public class KkRegistryCenter implements RegistryCenter {
     @Value("${kkregistry.servers}")
     private String servers;
 
+    Map<String, Long> VERSIONS = new HashMap<>();
+    MultiValueMap<InstanceMeta, ServiceMeta> RENEWS = new LinkedMultiValueMap<>();
+    ScheduledExecutorService consumerExecutor = null;
+    ScheduledExecutorService producerExecutor = null;
+
     @Override
     public void start() {
         log.info(" ====>>>> [KKRegistry] : start with server : {}", servers);
-        executor = Executors.newScheduledThreadPool(1);
+        consumerExecutor = Executors.newScheduledThreadPool(1);
+        producerExecutor = Executors.newScheduledThreadPool(1);
+        producerExecutor.scheduleAtFixedRate(() -> {
+            RENEWS.keySet().stream().forEach(
+                    instance -> {
+                        StringBuffer sb = new StringBuffer();
+                        for (ServiceMeta service : RENEWS.get(instance)) {
+                            sb.append(service.toPath()).append(",");
+                        }
+                        String services = sb.toString();
+                        if(services.endsWith(",")) services = services.substring(0, services.length() - 1);
+                        Long timestamp = HttpInvoker.httpPost(JSON.toJSONString(instance), servers + "/renews?services=" + services, Long.class);
+                        log.info(" ====>>>> [KKRegistry] : renew instance {} for {} at {}", instance, services, timestamp);
+                    }
+            );
+        }, 5, 5, TimeUnit.SECONDS);
     }
 
     @Override
     public void stop() {
         log.info(" ====>>>> [KKRegistry] : stop with server : {}", servers);
-        executor.shutdown();
+        gracefulShutdown(consumerExecutor);
+        gracefulShutdown(producerExecutor);
+    }
+
+    private void gracefulShutdown(ScheduledExecutorService executorService) {
+        executorService.shutdown();
         try {
-            executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
-            if(!executor.isTerminated()) {
-                executor.shutdownNow();
+            executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
+            if(!executorService.isTerminated()) {
+                executorService.shutdownNow();
             }
         } catch (InterruptedException e) {
             // ignore
@@ -55,6 +82,7 @@ public class KkRegistryCenter implements RegistryCenter {
         log.info(" ====>>>> [KKRegistry] : register instance {} for {}", instance, service);
         HttpInvoker.httpPost(JSON.toJSONString(instance), servers + "/reg?service=" + service.toPath(), InstanceMeta.class);
         log.info(" ====>>>> [KKRegistry] : registered {}", instance);
+        RENEWS.add(instance, service);
     }
 
     @Override
@@ -62,6 +90,7 @@ public class KkRegistryCenter implements RegistryCenter {
         log.info(" ====>>>> [KKRegistry] : unregister instance {} for {}", instance, service);
         HttpInvoker.httpPost(JSON.toJSONString(instance), servers + "/unreg?service=" + service.toPath(), InstanceMeta.class);
         log.info(" ====>>>> [KKRegistry] : unregistered {}", instance);
+        RENEWS.remove(instance, service);
     }
 
     @Override
@@ -73,12 +102,9 @@ public class KkRegistryCenter implements RegistryCenter {
         return instances;
     }
 
-    Map<String, Long> VERSIONS = new HashMap<>();
-    ScheduledExecutorService executor = null;
-
     @Override
     public void subscribe(ServiceMeta service, ChangedListener listener) {
-        executor.scheduleWithFixedDelay( () -> {
+        consumerExecutor.scheduleWithFixedDelay( () -> {
             Long version = VERSIONS.getOrDefault(service.toPath(), -1L);
             Long newVersion = HttpInvoker.httpGet(servers + "/version?service=" + service.toPath(), Long.class);
             log.info(" ====>>>> [KKRegistry] : version = {}, newVersion = {}", version, newVersion);

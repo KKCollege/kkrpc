@@ -6,7 +6,7 @@ import cn.kimmking.kkrpc.core.cluster.RoundRibonLoadBalancer;
 import cn.kimmking.kkrpc.core.consumer.ConsumerBootstrap;
 import cn.kimmking.kkrpc.core.filter.ContextParameterFilter;
 import cn.kimmking.kkrpc.core.meta.InstanceMeta;
-import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
+import cn.kimmking.kkrpc.core.registry.kk.KkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -74,7 +74,7 @@ public class ConsumerConfig {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
     public RegistryCenter consumer_rc() {
-        return new ZkRegistryCenter();
+        return new KkRegistryCenter();
     }
 
     @Bean

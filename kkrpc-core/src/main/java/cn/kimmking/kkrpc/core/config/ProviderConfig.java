@@ -3,7 +3,7 @@ package cn.kimmking.kkrpc.core.config;
 import cn.kimmking.kkrpc.core.api.RegistryCenter;
 import cn.kimmking.kkrpc.core.provider.ProviderBootstrap;
 import cn.kimmking.kkrpc.core.provider.ProviderInvoker;
-import cn.kimmking.kkrpc.core.registry.zk.ZkRegistryCenter;
+import cn.kimmking.kkrpc.core.registry.kk.KkRegistryCenter;
 import cn.kimmking.kkrpc.core.transport.SpringBootTransport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class ProviderConfig {
     @Bean //(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
     public RegistryCenter provider_rc() {
-        return new ZkRegistryCenter();
+        return new KkRegistryCenter(); //ZkRegistryCenter();
     }
 
 }

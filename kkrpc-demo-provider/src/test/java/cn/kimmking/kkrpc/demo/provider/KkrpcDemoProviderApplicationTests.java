@@ -1,7 +1,6 @@
 package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.config.ProviderProperties;
-import cn.kimmking.kkrpc.core.transport.MockKKRegistry;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.mockserver.ApolloTestingServer;
 import com.ctrip.framework.apollo.mockserver.MockApolloExtension;

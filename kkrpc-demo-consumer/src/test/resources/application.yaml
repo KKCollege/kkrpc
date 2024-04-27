@@ -1,5 +1,5 @@
 server:
-  port: 8089
+  port: 8889
 kkrpc:
   zk:
     server: localhost:2182
@@ -30,7 +30,7 @@ apollo:
       enabled: false
 
 kkregistry:
-  servers: http://localhost:8094/registry
+  servers: http://localhost:8894/registry
 
 logging:
   level:

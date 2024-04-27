@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-properties = {"kkregistry.servers=http://localhost:8094/registry", "kkrpc.app.env=test"})
+properties = {"kkregistry.servers=http://localhost:8894/registry", "kkrpc.app.env=test"})
 class KkrpcDemoConsumerApplicationTests {
 
     static ApplicationContext context1;
@@ -44,9 +44,9 @@ class KkrpcDemoConsumerApplicationTests {
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         context1 = SpringApplication.run(KkrpcDemoProviderApplication.class,
-                "--server.port=8094",
+                "--server.port=8894",
 //                "--kkrpc.zk.server=localhost:2182",
-                "--kkregistry.servers=http://localhost:8094/registry",
+                "--kkregistry.servers=http://localhost:8894/registry",
                 "--kkrpc.zk.server=localhost:2182",
                 "--kkrpc.app.env=test",
                 "--logging.level.cn.kimmking.kkrpc=info",
@@ -61,9 +61,9 @@ class KkrpcDemoConsumerApplicationTests {
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         context2 = SpringApplication.run(KkrpcDemoProviderApplication.class,
-                "--server.port=8095",
+                "--server.port=8895",
                 //"--kkrpc.zk.server=localhost:2182",
-                "--kkregistry.servers=http://localhost:8094/registry",
+                "--kkregistry.servers=http://localhost:8894/registry",
                 "--kkrpc.app.env=test",
                 "--logging.level.cn.kimmking.kkrpc=info",
                 "--kkrpc.provider.metas.dc=bj",

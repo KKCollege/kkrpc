@@ -1,7 +1,7 @@
 package cn.kimmking.kkrpc.demo.provider;
 
 import cn.kimmking.kkrpc.core.config.ProviderProperties;
-import cn.kimmking.kkrpc.core.test.TestZKServer;
+import cn.kimmking.kkrpc.core.transport.MockKKRegistry;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.mockserver.ApolloTestingServer;
 import com.ctrip.framework.apollo.mockserver.MockApolloExtension;
@@ -10,15 +10,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ExtendWith(MockApolloExtension.class)
 class KkrpcDemoProviderApplicationTests {
 
-    static TestZKServer zkServer = new TestZKServer();
+    //static TestZKServer zkServer = new TestZKServer();
     static ApolloTestingServer apollo = new ApolloTestingServer();
 
     @Autowired
@@ -27,12 +26,12 @@ class KkrpcDemoProviderApplicationTests {
     @SneakyThrows
     @BeforeAll
     static void init() {
-        System.out.println(" ====================================== ");
-        System.out.println(" ====================================== ");
-        System.out.println(" =============     ZK2182    ========== ");
-        System.out.println(" ====================================== ");
-        System.out.println(" ====================================== ");
-        zkServer.start();
+//        System.out.println(" ====================================== ");
+//        System.out.println(" ====================================== ");
+//        System.out.println(" =============     ZK2182    ========== ");
+//        System.out.println(" ====================================== ");
+//        System.out.println(" ====================================== ");
+//        zkServer.start();
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         System.out.println(" ===========     mock apollo    ======= ");
@@ -59,8 +58,8 @@ class KkrpcDemoProviderApplicationTests {
 
     @AfterAll
     static void destory() {
-        System.out.println(" ===========     stop zookeeper server    ======= ");
-        zkServer.stop();
+//        System.out.println(" ===========     stop zookeeper server    ======= ");
+//        zkServer.stop();
         System.out.println(" ===========     stop apollo mockserver   ======= ");
         apollo.close();
         System.out.println(" ===========     destroy in after all     ======= ");

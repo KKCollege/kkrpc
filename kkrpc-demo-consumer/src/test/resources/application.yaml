@@ -29,6 +29,9 @@ apollo:
     eagerLoad:
       enabled: false
 
+kkregistry:
+  servers: http://localhost:8094/registry
+
 logging:
   level:
     root: info

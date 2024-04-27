@@ -30,3 +30,7 @@ jobs:
           distribution: 'temurin'
       - name: Run the Maven package
         run: mvn clean package
+      - name: Codecov
+        uses: codecov/codecov-action@v4.3.0
+  
+          

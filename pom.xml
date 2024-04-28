@@ -47,6 +47,9 @@
 
         <spring.boot.version>3.2.3</spring.boot.version>
         <apollo.version>2.2.0</apollo.version>
+
+        <argline>-server -Xms256m -Xmx512m -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m</argline>
+        <jacoco.skip>true</jacoco.skip>
     </properties>
 
     <modules>
@@ -153,7 +156,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.11</version>
                 <executions>
                     <execution>
                         <id>jacoco-initialize</id>
@@ -181,10 +184,37 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <useSystemClassLoader>true</useSystemClassLoader>
+                    <argLine>${argline} ${jacocoArgLine}</argLine>
+                    <systemProperties>
+                        <!-- common shared -->
+                    </systemProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit-platform</artifactId>
+                        <version>3.2.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
 
     <profiles>
+        <profile>
+            <id>jacoco</id>
+            <properties>
+                <jacoco.skip>false</jacoco.skip>
+            </properties>
+        </profile>
         <profile>
             <id>release</id>
             <build>

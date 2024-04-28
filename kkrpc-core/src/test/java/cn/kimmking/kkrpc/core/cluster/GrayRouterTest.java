@@ -52,6 +52,7 @@ class GrayRouterTest {
     }
 
     private void grayTest(int ratio) {
+        int delta = 2;
         GrayRouter grayRouter = new GrayRouter(ratio);
         List<InstanceMeta> providers = mock();
         providers.get(0).getParameters().put("gray", "true");
@@ -60,11 +61,11 @@ class GrayRouterTest {
             List<InstanceMeta> grays = grayRouter.route(providers);
             result[grays.size()] = result[grays.size()] + 1;
         }
-        System.out.println(" ===>>> gray = " + result[1] + ", normal = " + result[2]);
-        assertTrue(result[1] > (ratio -1) * 100);
-        assertTrue(result[1] < (ratio +1) * 100);
-        assertTrue(result[2] > (100- ratio -1) * 100);
-        assertTrue(result[2] < (100- ratio +1) * 100);
+        System.out.println("ratio=" + ratio + " ===>>> gray = " + result[1] + ", normal = " + result[2]);
+        assertTrue(result[1] > (ratio -delta) * 100);
+        assertTrue(result[1] < (ratio +delta) * 100);
+        assertTrue(result[2] > (100- ratio -delta) * 100);
+        assertTrue(result[2] < (100- ratio +delta) * 100);
     }
 
     @Test

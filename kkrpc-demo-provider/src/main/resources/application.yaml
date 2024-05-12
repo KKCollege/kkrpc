@@ -21,7 +21,7 @@ kkregistry:
 logging:
   level:
     root: error
-    cn.kimmking.kkrpc: debug
+    cn.kimmking: debug
     io.github.kimmking: debug
     com.ctrip: info
 

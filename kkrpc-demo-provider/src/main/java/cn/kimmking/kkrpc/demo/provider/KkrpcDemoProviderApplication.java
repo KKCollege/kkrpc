@@ -1,5 +1,6 @@
 package cn.kimmking.kkrpc.demo.provider;
 
+import cn.kimmking.kkconfig.client.annotation.EnableKKConfig;
 import cn.kimmking.kkrpc.core.api.RpcRequest;
 import cn.kimmking.kkrpc.core.api.RpcResponse;
 import cn.kimmking.kkrpc.core.config.ApolloChangedListener;
@@ -28,14 +29,15 @@ import java.util.Map;
 
 @RestController
 @SpringBootApplication
-@EnableApolloConfig
+//@EnableApolloConfig
+@EnableKKConfig
 @Import({ProviderConfig.class})
 public class KkrpcDemoProviderApplication {
 
-    @Bean
-    ApolloChangedListener apolloChangedListener() {
-        return new ApolloChangedListener();
-    }
+//    @Bean
+//    ApolloChangedListener apolloChangedListener() {
+//        return new ApolloChangedListener();
+//    }
 
 
     public static void main(String[] args) {
